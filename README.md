@@ -8,6 +8,7 @@
 
 ## やること
 - React
+  - SPAでやる？
 - Go
 - SurrelDB
 - DDD
