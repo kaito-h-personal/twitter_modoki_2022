@@ -26,3 +26,9 @@
 3. 疎通
 4. DB導入
 5. 機能を詰める
+
+## メモ
+- Goのローカルサーバー
+  - コンテナに入って`go run main.go`
+  - http://localhost:8006/ で入れる
+  - 参考: https://solomaker.club/how-to-create-go-development-environment-with-docker/
