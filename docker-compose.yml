@@ -1,0 +1,13 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./docker_images
+      args:
+        - GO_DOCKER_IMAGE_VERSION=${GO_DOCKER_IMAGE_VERSION}
+        - API_CODE_WORKDIR=${API_CODE_WORKDIR}
+    volumes:
+      - ${API_CODE_LOCAL_PATH}:${API_CODE_WORKDIR}
+    ports:
+      - ${API_CONTAINER_PORT}:${API_PORT}
+    tty: true
