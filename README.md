@@ -1,6 +1,6 @@
 # twitter_modoki_2022
 - 簡易twitter
-- React (+ Typescript) + Go + SurrelDB
+- React (+ Typescript) + Go + SurrealDB
 
 ### 注意書き
 - 個人開発なのでxx flowやWIPは使用しないで一旦main pushしてしまう
@@ -10,7 +10,7 @@
 - React
   - SPAでやる？
 - Go
-- SurrelDB
+- SurrealDB
 - DDD
 - docker
 
