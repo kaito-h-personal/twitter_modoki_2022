@@ -11,3 +11,12 @@ services:
     ports:
       - ${API_CONTAINER_PORT}:${API_PORT}
     tty: true
+  front:
+    build:
+      args:
+        - NODE_VER=16.17.1-slim
+      context: ./docker_images/front
+      # dockerfile: Dockerfile
+    volumes:
+      - ./src/front/:/home/node/app
+    tty: true

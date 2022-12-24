@@ -32,3 +32,10 @@
   - コンテナに入って`go run main.go`
   - http://localhost:8006/ で入れる
   - 参考: https://solomaker.club/how-to-create-go-development-environment-with-docker/
+- front構築
+```
+yarn create vite
+✔ Project name: … frontend
+✔ Select a framework: › React
+✔ Select a variant: › TypeScript + SWC
+```
