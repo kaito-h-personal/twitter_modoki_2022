@@ -19,4 +19,6 @@ services:
       # dockerfile: Dockerfile
     volumes:
       - ./src/front/:/home/node/app
+    ports:
+      - 5173:5173 # 5173がviteのポート
     tty: true
