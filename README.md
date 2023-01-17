@@ -29,7 +29,7 @@
 
 ## メモ
 - Goのローカルサーバー
-  - コンテナに入って`go run main.go`
+  - コンテナに入って`go run main.go` # TODO: 起動時に実行するようにする
   - http://localhost:8006/ で入れる
   - 参考: https://solomaker.club/how-to-create-go-development-environment-with-docker/
 - front構築

@@ -1,16 +1,22 @@
 package main
 
 import (
-	"io"
 	"log"
 	"net/http"
+
+	"github.com/rs/cors"
 )
 
 func main() {
-	indexFunc := func(w http.ResponseWriter, _ *http.Request) {
-		io.WriteString(w, "indexページ")
-	}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte("{\"hello\": \"world in go\"}"))
+	})
 
-	http.HandleFunc("/", indexFunc)
-	log.Fatal(http.ListenAndServe(":8007", nil))
+	// CORS レスポンスヘッダーの追加
+	c := cors.Default()
+	handler := c.Handler(mux)
+
+	log.Fatal(http.ListenAndServe(":8007", handler))
 }
