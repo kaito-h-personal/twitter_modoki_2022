@@ -7,9 +7,7 @@ function App() {
 
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:8006/", {
-      method: "GET",
-    })
+    fetch("http://localhost:8006/", { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
@@ -18,14 +16,7 @@ function App() {
 
   return (
     <div className="App">
-      <div>
-        {posts.hello}
-        {/* <ul>
-          {posts.map((post) => (
-            <li key={post.id}>{post.title}</li>
-          ))}
-        </ul> */}
-      </div>
+      <div>{posts.hello}</div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src="/vite.svg" className="logo" alt="Vite logo" />
