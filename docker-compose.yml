@@ -22,3 +22,8 @@ services:
     ports:
       - 5173:5173 # 5173がviteのポート
     tty: true
+  db:
+    image: surrealdb/surrealdb:latest
+    command: start --user root --pass pasuwado
+    ports:
+      - 8009:8000

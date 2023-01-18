@@ -19,6 +19,7 @@
 - テストコード
 - CICD(Github Actions)
 - 手続き版も作る
+- docker-compose、こんなにenv介さなくても良くない？
 
 ## 手順
 1. goサーバー
@@ -43,3 +44,10 @@ yarn create vite
   - `go install github.com/cosmtrek/air@latest`
   - `air`で実行
     - http://localhost:8006/ 呼べる
+- DB導入
+  - 疎通確認は以下
+```
+DATA="INFO FOR DB;"
+curl --request POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "${DATA}" http://localhost:8009/sql
+[{"time":"68.129µs","status":"OK","result":{"dl":{},"dt":{},"sc":{},"tb":{}}}]
+```
