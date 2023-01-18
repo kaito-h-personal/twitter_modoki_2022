@@ -39,3 +39,7 @@ yarn create vite
 ✔ Select a framework: › React
 ✔ Select a variant: › TypeScript + SWC
 ```
+- air導入
+  - `go install github.com/cosmtrek/air@latest`
+  - `air`で実行
+    - http://localhost:8006/ 呼べる

@@ -9,7 +9,7 @@ func main() {
 	indexFunc := func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-		w.Write([]byte("{\"hello\": \"world in go!\"}"))
+		w.Write([]byte("{\"hello\": \"world in golang!\"}"))
 	}
 
 	http.HandleFunc("/", indexFunc)
