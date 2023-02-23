@@ -14,6 +14,13 @@
 - DDD
 - docker
 
+### フロント
+- ツイートの枠作る
+- アイコン読み込み
+- 投稿フォーム
+- 少しずつ読み込む
+  - スクロールで追加
+
 ## できればやること
 - Typescript
 - テストコード
@@ -34,6 +41,9 @@
   - http://localhost:8006/ で入れる
   - 参考: https://solomaker.club/how-to-create-go-development-environment-with-docker/
 - front構築
+  - `npm install @mui/material @emotion/react @emotion/styled`
+    - `npm notice New major version of npm available! 8.15.0 -> 9.5.1`
+  - `viteは以下`
 ```
 yarn create vite
 ✔ Project name: … frontend
@@ -47,6 +57,7 @@ yarn create vite
 - DB導入
   - 疎通確認は以下
 ```
+
 DATA="INFO FOR DB;"
 curl --request POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "${DATA}" http://localhost:8009/sql
 [{"time":"68.129µs","status":"OK","result":{"dl":{},"dt":{},"sc":{},"tb":{}}}]
