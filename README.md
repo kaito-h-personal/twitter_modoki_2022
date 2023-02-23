@@ -51,3 +51,11 @@ DATA="INFO FOR DB;"
 curl --request POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "${DATA}" http://localhost:8009/sql
 [{"time":"68.129µs","status":"OK","result":{"dl":{},"dt":{},"sc":{},"tb":{}}}]
 ```
+### 起動
+- `docker compose up`
+- reactは何もしなくても起動する
+  - http://localhost:5173/
+- goは起動しないので以下のコマンドを実行
+  - `docker compose exec api sh`
+    - bashは無い
+  - `air`
