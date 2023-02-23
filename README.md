@@ -41,7 +41,7 @@ yarn create vite
 ✔ Select a variant: › TypeScript + SWC
 ```
 - air導入
-  - `go install github.com/cosmtrek/air@latest`
+  - `go install github.com/cosmtrek/air@latest` # TODO: 起動時に実行するようにする
   - `air`で実行
     - http://localhost:8006/ 呼べる
 - DB導入
