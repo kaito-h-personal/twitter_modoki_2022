@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import "./App.css";
 
-// import reactLogo from "./assets/react.svg";
+// import reactLogo from "./assets/react.svg"; //TODO: 消す
 
 function App() {
   const [count, setCount] = useState(0);
