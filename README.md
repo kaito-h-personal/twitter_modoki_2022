@@ -73,3 +73,19 @@ curl --request POST --header "Accept: application/json" --header "NS: test" --he
   - `docker compose exec api sh`
     - bashは無い
   - `air`
+
+# 設計
+- 起動時
+  - サーバーからツイートを取得(1)
+    - n個
+- 追加時
+  - 追加取得
+- ツイート時
+  - サーバーに追加
+- リロード時
+  - (1)
+
+## サーバーサイド
+- 全件取得
+- 追加取得
+- ツイート追加
