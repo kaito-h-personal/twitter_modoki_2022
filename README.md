@@ -62,6 +62,9 @@ DATA="INFO FOR DB;"
 curl --request POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "${DATA}" http://localhost:8009/sql
 [{"time":"68.129µs","status":"OK","result":{"dl":{},"dt":{},"sc":{},"tb":{}}}]
 ```
+- 追加インストール
+  - `npm install @mui/icons-material`
+
 ### 起動
 - `docker compose up`
 - reactは何もしなくても起動する
