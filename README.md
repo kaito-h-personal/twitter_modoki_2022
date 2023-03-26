@@ -64,6 +64,8 @@ curl --request POST --header "Accept: application/json" --header "NS: test" --he
 ```
 - 追加インストール
   - `npm install @mui/icons-material`
+- apiコンテナ内で`curl db:8009`で疎通確認
+  - `http://db:8009/sql`でも可？
 
 ### 起動
 - `docker compose up`
