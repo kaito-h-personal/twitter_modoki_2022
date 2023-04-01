@@ -94,3 +94,21 @@ curl --request POST --header "Accept: application/json" --header "NS: test" --he
 - 全件取得
 - 追加取得
 - ツイート追加
+
+### tweetテーブル
+- ID
+- 日付
+- 本文
+- userID
+
+### userテーブル
+- ID
+- 名前
+- 表示ID?
+
+CREATE tweet SET
+	id = 1,
+  auther = 1,
+  text = 'I got it.',
+	created_at = time::now()
+;
