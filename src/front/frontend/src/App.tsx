@@ -16,13 +16,20 @@ import { red } from "@mui/material/colors";
 import IconButton from "@mui/material/IconButton";
 
 function App() {
-  const [tweets, setTweets] = useState([]);
+  const [tweets, setTweets] = useState<Tweet[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:8006/tweets")
       .then((response) => response.json())
       .then((data) => setTweets(data));
   }, []);
+
+  type Tweet = {
+    id: string;
+    auther: number;
+    created_at: string;
+    text: string;
+  };
 
   return (
     <div className="App">
