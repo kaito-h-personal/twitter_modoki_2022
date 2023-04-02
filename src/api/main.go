@@ -33,10 +33,10 @@ func main() {
     // fmt.Println("!")
     fmt.Println(jsonString)
 
+    // 構造体に変換
     var responses []Response
     err = json.Unmarshal([]byte(jsonString), &responses)
     if err != nil {
-        fmt.Println("@@")
         fmt.Println(err)
         return
     }
@@ -52,6 +52,12 @@ func main() {
         }
     }
     fmt.Println("Fin.")
+
+    // TODO: 上記で取得したものを返す
+
+    http.HandleFunc("/tweets", tweetsHandler)
+
+    log.Fatal(http.ListenAndServe(":8007", nil))
 }
 
 func fetch_tweets() (string, error) {
@@ -103,4 +109,24 @@ func sendQuery(query string) (string, error) {
     }
 
     return string(body), nil
+}
+
+func tweetsHandler(w http.ResponseWriter, r *http.Request) {
+    tweets := []Tweet{
+        {
+            Auther:    1,
+            CreatedAt: "2023-04-01T16:18:18.419644996Z",
+            ID:        "tweet:1",
+            Text:      "I got it.",
+        },
+        {
+            Auther:    2,
+            CreatedAt: "2023-04-01T16:19:07.287544979Z",
+            ID:        "tweet:2",
+            Text:      "I'm sleepy.",
+        },
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(tweets)
 }
