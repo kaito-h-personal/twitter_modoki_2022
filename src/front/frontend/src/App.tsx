@@ -35,15 +35,12 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 }));
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [tweets, setTweets] = useState([]);
 
-  const [posts, setPosts] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:8006/", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        setPosts(data);
-      });
+    fetch("http://localhost:8006/tweets")
+      .then((response) => response.json())
+      .then((data) => setTweets(data));
   }, []);
 
   const [expanded, setExpanded] = React.useState(false);
@@ -54,6 +51,18 @@ function App() {
 
   return (
     <div className="App">
+      <div>
+        <h1>Tweets</h1>
+        <ul>
+          {tweets.map((tweet) => (
+            <li key={tweet.id}>
+              <p>{tweet.text}</p>
+              <p>Auther: {tweet.auther}</p>
+              <p>Created At: {tweet.created_at}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
       {/* ログインフォームここから
       <Container maxWidth="xs">
         <Box
@@ -269,10 +278,6 @@ function App() {
           </CardContent>
         </Collapse>
       </Card>
-
-      <div>👤&lt;{posts.hello}</div>
-      <div>👤&lt;起きた〜</div>
-      <div>👤&lt;お腹すいた〜</div>
     </div>
   );
 }
