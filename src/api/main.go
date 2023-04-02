@@ -6,6 +6,7 @@ import (
     "net/http"
     "io/ioutil"
     "encoding/json"
+    "log"
 )
 
 type Tweet struct {
