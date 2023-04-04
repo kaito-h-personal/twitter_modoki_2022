@@ -68,7 +68,7 @@ func main() {
             ,name = 'ユーザー6'
         ;
     `
-	_, err := sendQuery(query)
+	_, err := executeQuery(query)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -77,8 +77,8 @@ func main() {
 
 	_, _ = fetch_tweets() // 後で消す
 
-	http.HandleFunc("/tweets", tweetsHandler)
-	http.HandleFunc("/add_tweets", addTweetsHandler)
+	http.HandleFunc("/tweets", fetchTweetsHandler)
+	http.HandleFunc("/add_tweets", addTweetHandler)
 
 	log.Fatal(http.ListenAndServe(":8007", nil))
 }
@@ -87,7 +87,7 @@ func fetch_tweets() ([]TweetResponse, error) {
 	// todo: 順番が変
 	query := "SELECT * FROM tweet ORDER BY tweet.created_at DESC FETCH user;"
 
-	jsonString, err := sendQuery(query)
+	jsonString, err := executeQuery(query)
 	if err != nil {
 		fmt.Println(err)
 		return []TweetResponse{}, err
@@ -129,7 +129,7 @@ func fetch_tweets() ([]TweetResponse, error) {
 
 }
 
-func sendQuery(query string) (string, error) {
+func executeQuery(query string) (string, error) {
 	url := "http://db:8000/sql"
 	data := []byte(query)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
@@ -159,7 +159,7 @@ func sendQuery(query string) (string, error) {
 	return string(body), nil
 }
 
-func tweetsHandler(w http.ResponseWriter, r *http.Request) {
+func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
@@ -172,7 +172,7 @@ func tweetsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tweets)
 }
 
-func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
+func addTweetHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
@@ -199,7 +199,7 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(query)
 
 	// TODO: 名前はerr2で良い？
-	add_result, err2 := sendQuery(query)
+	add_result, err2 := executeQuery(query)
 	if err2 != nil {
 		fmt.Println(err2.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
