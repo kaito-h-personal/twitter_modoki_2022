@@ -119,30 +119,38 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
     var addTweet AddTweet
     err := json.NewDecoder(r.Body).Decode(&addTweet)
     if err != nil {
-    fmt.Println(err.Error())
-    http.Error(w, err.Error(), http.StatusBadRequest)
+        fmt.Println(err.Error())
+        http.Error(w, err.Error(), http.StatusBadRequest)
         return
     }
 
-    tweets := []Tweet{
-        {
-            Auther:    1,
-            CreatedAt: "2023-04-01T16:18:18.419644996Z",
-            ID:        "tweet:1",
-            Text:      "I got it.",
-        },
-        {
-            Auther:    2,
-            CreatedAt: "2023-04-01T16:19:07.287544979Z",
-            ID:        "tweet:2",
-            Text:      "I'm sleepy.",
-        },
-        {
-            Auther:    3,
-            CreatedAt: "2023-04-01T16:19:07.287544979Z",
-            ID:        "tweet:3",
-            Text:      addTweet.Text,
-        },
+    // TODO: SQLインジェクション対策
+    // TODO: IDをオートインクリメント
+    query := fmt.Sprintf(`CREATE tweet SET
+    	id = 4,
+      auther = %d,
+      text = '%s',
+    	created_at = time::now()
+    ;`, addTweet.Auther, addTweet.Text)
+
+    fmt.Println("query")
+    fmt.Println(query)
+
+
+    // TODO: 名前はerr2で良い？
+    add_result, err2 := sendQuery(query)
+    if err2 != nil {
+        fmt.Println(err2.Error())
+        http.Error(w, err.Error(), http.StatusBadRequest)
+    }
+
+    fmt.Println("add_result")
+    fmt.Println(add_result)
+
+    tweets, err := fetch_tweets()
+    if err != nil {
+        fmt.Println(err)
+        return
     }
 
     w.Header().Set("Content-Type", "application/json")
