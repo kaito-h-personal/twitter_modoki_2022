@@ -30,6 +30,39 @@ type Response struct {
 }
 
 func main() {
+    // デフォルトのtweetをセット
+    query := "DELETE tweet;"
+    _, err := sendQuery(query)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    query = `
+        CREATE tweet SET
+            auther = 1
+            ,text = 'テスト内容1'
+            ,created_at = time::now()
+        ;`
+    _, err = sendQuery(query)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    query = `
+        CREATE tweet SET
+            auther = 2
+            ,text = 'テスト内容2'
+            ,created_at = time::now()
+        ;`
+    _, err = sendQuery(query)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Println("デフォルトのtweetをセット")
+
     http.HandleFunc("/tweets", tweetsHandler)
     http.HandleFunc("/add_tweets", addTweetsHandler)
 
@@ -38,18 +71,7 @@ func main() {
 
 func fetch_tweets() ([]Tweet, error) {
     query := "SELECT * FROM tweet;"
-    //     query := `CREATE tweet SET
-// 	id = 1,
-//   auther = 1,
-//   text = 'テスト内容1',
-// 	created_at = time::now()
-// ;`
-//     query := `CREATE tweet SET
-// 	id = 2,
-//   auther = 2,
-//   text = 'テスト内容2',
-// 	created_at = time::now()
-// ;`
+
     jsonString, err := sendQuery(query)
     if err != nil {
         fmt.Println(err)
@@ -90,10 +112,6 @@ func sendQuery(query string) (string, error) {
     }
     defer resp.Body.Close()
 
-    // fmt.Println(resp.Status)
-    // fmt.Println("~")
-    // fmt.Println(resp)
-
     body, err := ioutil.ReadAll(resp.Body)
     if err != nil {
         fmt.Println(err)
@@ -125,11 +143,12 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     // TODO: SQLインジェクション対策
-    query := fmt.Sprintf(`CREATE tweet SET
-      auther = %d,
-      text = '%s',
-    	created_at = time::now()
-    ;`, addTweet.Auther, addTweet.Text)
+    query := fmt.Sprintf(`
+        CREATE tweet SET
+            auther = %d
+            ,text = '%s'
+            ,created_at = time::now()
+        ;`, addTweet.Auther, addTweet.Text)
 
     fmt.Println("query")
     fmt.Println(query)
