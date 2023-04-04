@@ -31,7 +31,7 @@ function App() {
       // },
       body: JSON.stringify({
         auther: 6,
-        text: "テスト内容",
+        text: name,
       }),
     })
       .then((response) => response.json())
