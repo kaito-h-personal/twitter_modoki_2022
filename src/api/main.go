@@ -70,7 +70,7 @@ func main() {
 }
 
 func fetch_tweets() ([]Tweet, error) {
-    query := "SELECT * FROM tweet;"
+    query := "SELECT * FROM tweet ORDER BY created_at DESC;"
 
     jsonString, err := sendQuery(query)
     if err != nil {
