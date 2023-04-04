@@ -85,7 +85,7 @@ func main() {
 }
 
 func fetch_tweets() ([]TweetResponse, error) {
-    query := "SELECT * FROM tweet FETCH user /* ORDER BY created_at DESC */;"
+    query := "SELECT * FROM tweet ORDER BY tweet.created_at DESC FETCH user;"
 
     jsonString, err := sendQuery(query)
     if err != nil {
@@ -184,6 +184,7 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // TODO: 将来的に「user = %s」になる予定
     // TODO: SQLインジェクション対策
     query := fmt.Sprintf(`
         CREATE tweet SET
