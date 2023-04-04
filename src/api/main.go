@@ -125,9 +125,7 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     // TODO: SQLインジェクション対策
-    // TODO: IDをオートインクリメント
     query := fmt.Sprintf(`CREATE tweet SET
-    	id = 4,
       auther = %d,
       text = '%s',
     	created_at = time::now()
