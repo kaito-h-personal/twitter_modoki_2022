@@ -9,8 +9,19 @@ import (
     "log"
 )
 
+type TweetResponse struct {
+    UserName       string    `json:"user_name"`
+    CreatedAt  string `json:"created_at"`
+    Text       string `json:"text"`
+}
+
+type User struct {
+    Id string `json:"id"`
+    Name string `json:"name"`
+}
+
 type Tweet struct {
-    Auther     int    `json:"auther"`
+    User       User    `json:"user"`
     CreatedAt  string `json:"created_at"`
     ID         string `json:"id"`
     Text       string `json:"text"`
@@ -32,20 +43,24 @@ type Response struct {
 func main() {
     // デフォルトのtweetをセット
     query := `
+        DELETE user;
         DELETE tweet;
+        CREATE user SET
+            id = 1
+            ,name = 'ユーザー1'
+        ;
+        CREATE user SET
+            id = 3
+            ,name = 'ユーザー3'
+        ;
         CREATE tweet SET
-            auther = 1
+            user = user:1
             ,text = 'テスト内容1'
             ,created_at = time::now()
         ;
         CREATE tweet SET
-            auther = 2
+            user = user:3
             ,text = 'テスト内容2'
-            ,created_at = time::now()
-        ;
-        CREATE tweet SET
-            auther = 3
-            ,text = 'テスト内容3'
             ,created_at = time::now()
         ;
     `
@@ -56,32 +71,59 @@ func main() {
     }
     fmt.Println("デフォルトのtweetをセット")
 
+    _,_ = fetch_tweets() // 後で消す
+
     http.HandleFunc("/tweets", tweetsHandler)
     http.HandleFunc("/add_tweets", addTweetsHandler)
 
     log.Fatal(http.ListenAndServe(":8007", nil))
 }
 
-func fetch_tweets() ([]Tweet, error) {
-    query := "SELECT * FROM tweet ORDER BY created_at DESC;"
+func fetch_tweets() ([]TweetResponse, error) {
+    query := "SELECT * FROM tweet FETCH user /* ORDER BY created_at DESC */;"
 
     jsonString, err := sendQuery(query)
     if err != nil {
         fmt.Println(err)
-        return []Tweet{}, err
+        return []TweetResponse{}, err
     }
+
+    fmt.Println("jsonString")
+    fmt.Println(jsonString)
 
     // 構造体に変換
     var responses []Response
     err = json.Unmarshal([]byte(jsonString), &responses)
     if err != nil {
         fmt.Println(err)
-        return []Tweet{}, err
+        return []TweetResponse{}, err
     }
 
     response := responses[0] // responsesの要素は1つの想定
     var tweets []Tweet = response.Result
-    return tweets, nil
+    fmt.Println("tweets")
+    fmt.Println(tweets)
+
+
+
+    var tweetResponses []TweetResponse
+
+    for _, t := range tweets {
+        tr := TweetResponse{
+            UserName: t.User.Name,
+            CreatedAt: t.CreatedAt,
+            Text: t.Text,
+        }
+        tweetResponses = append(tweetResponses, tr)
+
+    }
+
+    fmt.Println("tweetResponses")
+    fmt.Println(tweetResponses)
+
+    return tweetResponses, nil
+
+
     }
 
 func sendQuery(query string) (string, error) {
@@ -119,6 +161,7 @@ func tweetsHandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         fmt.Println(err)
         return
+        // TODO: エラーの時CORSになる
     }
 
     w.Header().Set("Content-Type", "application/json")
