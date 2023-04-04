@@ -12,9 +12,9 @@ import (
 
 type TweetResponse struct {
 	Id        string `json:"id"`
-	UserName  string `json:"user_name"`
-	CreatedAt string `json:"created_at"`
 	Text      string `json:"text"`
+	CreatedAt string `json:"created_at"`
+	UserName  string `json:"user_name"`
 }
 
 type User struct {
@@ -114,9 +114,9 @@ func fetch_tweets() ([]TweetResponse, error) {
 	for _, t := range tweets {
 		tr := TweetResponse{
 			Id:        t.Id,
-			UserName:  t.User.Name,
-			CreatedAt: t.CreatedAt,
 			Text:      t.Text,
+			CreatedAt: t.CreatedAt,
+			UserName:  t.User.Name,
 		}
 		tweetResponses = append(tweetResponses, tr)
 
