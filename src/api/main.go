@@ -30,10 +30,30 @@ type Response struct {
 }
 
 func main() {
-    jsonString, err := fetch_tweets()
+    http.HandleFunc("/tweets", tweetsHandler)
+    http.HandleFunc("/add_tweets", addTweetsHandler)
+
+    log.Fatal(http.ListenAndServe(":8007", nil))
+}
+
+func fetch_tweets() ([]Tweet, error) {
+    query := "SELECT * FROM tweet;"
+    //     query := `CREATE tweet SET
+// 	id = 1,
+//   auther = 1,
+//   text = 'テスト内容1',
+// 	created_at = time::now()
+// ;`
+//     query := `CREATE tweet SET
+// 	id = 2,
+//   auther = 2,
+//   text = 'テスト内容2',
+// 	created_at = time::now()
+// ;`
+    jsonString, err := sendQuery(query)
     if err != nil {
         fmt.Println(err)
-        return
+        return []Tweet{}, err
     }
 
     // fmt.Println("!")
@@ -44,7 +64,7 @@ func main() {
     err = json.Unmarshal([]byte(jsonString), &responses)
     if err != nil {
         fmt.Println(err)
-        return
+        return []Tweet{}, err
     }
 
     for _, response := range responses {
@@ -57,31 +77,12 @@ func main() {
             fmt.Println("Text:", tweet.Text)
         }
     }
+    fmt.Println("Fin1.")
+
+    response := responses[0] // responsesの要素は1つの想定
+    var tweets []Tweet = response.Result
     fmt.Println("Fin.")
-
-    // TODO: 上記で取得したものを返す
-
-    http.HandleFunc("/tweets", tweetsHandler)
-    http.HandleFunc("/add_tweets", addTweetsHandler)
-
-    log.Fatal(http.ListenAndServe(":8007", nil))
-}
-
-func fetch_tweets() (string, error) {
-//     query := `CREATE tweet SET
-// 	id = 2,
-//   auther = 2,
-//   text = 'I\'m sleepy.',
-// 	created_at = time::now()
-// ;`
-    query := "SELECT * FROM tweet;"
-    body, err := sendQuery(query)
-    if err != nil {
-        fmt.Println(err)
-        return "", err
-    }
-
-    return body, nil
+    return tweets, nil
     }
 
 func sendQuery(query string) (string, error) {
@@ -119,19 +120,10 @@ func sendQuery(query string) (string, error) {
 }
 
 func tweetsHandler(w http.ResponseWriter, r *http.Request) {
-    tweets := []Tweet{
-        {
-            Auther:    1,
-            CreatedAt: "2023-04-01T16:18:18.419644996Z",
-            ID:        "tweet:1",
-            Text:      "I got it.",
-        },
-        {
-            Auther:    2,
-            CreatedAt: "2023-04-01T16:19:07.287544979Z",
-            ID:        "tweet:2",
-            Text:      "I'm sleepy.",
-        },
+    tweets, err := fetch_tweets()
+    if err != nil {
+        fmt.Println(err)
+        return
     }
 
     w.Header().Set("Content-Type", "application/json")
