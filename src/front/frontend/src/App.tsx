@@ -64,7 +64,7 @@ function App() {
               <CardHeader
                 avatar={
                   <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                    Ri
+                    {tweet.user_name.slice(0, 2)}
                   </Avatar>
                 }
                 action={

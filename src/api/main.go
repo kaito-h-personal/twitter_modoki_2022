@@ -7,6 +7,7 @@ import (
     "io/ioutil"
     "encoding/json"
     "log"
+    "time"
 )
 
 type TweetResponse struct {
@@ -57,12 +58,12 @@ func main() {
         CREATE tweet SET
             user = user:1
             ,text = 'テスト内容1'
-            ,created_at = time::now()
+            ,created_at = '2006/01/02 15:04:05'
         ;
         CREATE tweet SET
             user = user:3
             ,text = 'テスト内容2'
-            ,created_at = time::now()
+            ,created_at = '2009/01/02 15:04:05'
         ;
         CREATE user SET
             id = 6
@@ -85,6 +86,7 @@ func main() {
 }
 
 func fetch_tweets() ([]TweetResponse, error) {
+    // todo: 順番が変
     query := "SELECT * FROM tweet ORDER BY tweet.created_at DESC FETCH user;"
 
     jsonString, err := sendQuery(query)
@@ -184,14 +186,17 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    JST := time.FixedZone("Asia/Tokyo", 9*60*60)
+    now := time.Now().In(JST).Format("2006/01/02 15:04:05") // Goは「2006/01/02 15:04:05」でフォーマットを指定する
+
     // TODO: 将来的に「user = %s」になる予定
     // TODO: SQLインジェクション対策
     query := fmt.Sprintf(`
         CREATE tweet SET
             user = user:%d
             ,text = '%s'
-            ,created_at = time::now()
-        ;`, addTweet.UserId, addTweet.Text)
+            ,created_at = '%s'
+        ;`, addTweet.UserId,  addTweet.Text, now)
 
     fmt.Println("query")
     fmt.Println(query)
