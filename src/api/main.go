@@ -30,7 +30,7 @@ type Tweet struct {
 }
 
 type AddTweet struct {
-	UserId string    `json:"user_id"`
+	UserId string `json:"user_id"`
 	Text   string `json:"text"`
 }
 
@@ -160,19 +160,22 @@ func sendQuery(query string) (string, error) {
 }
 
 func tweetsHandler(w http.ResponseWriter, r *http.Request) {
-	tweets, err := fetch_tweets()
-	if err != nil {
-		fmt.Println(err)
-		return
-		// TODO: エラーの時CORSになる
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+	tweets, err := fetch_tweets()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
 	json.NewEncoder(w).Encode(tweets)
 }
 
 func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
 	var addTweet AddTweet
 	err := json.NewDecoder(r.Body).Decode(&addTweet)
 	if err != nil {
@@ -211,7 +214,5 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	json.NewEncoder(w).Encode(tweets)
 }
