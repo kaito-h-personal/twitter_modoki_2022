@@ -56,9 +56,6 @@ func fetch_tweets() ([]Tweet, error) {
         return []Tweet{}, err
     }
 
-    // fmt.Println("!")
-    fmt.Println(jsonString)
-
     // 構造体に変換
     var responses []Response
     err = json.Unmarshal([]byte(jsonString), &responses)
@@ -67,21 +64,8 @@ func fetch_tweets() ([]Tweet, error) {
         return []Tweet{}, err
     }
 
-    for _, response := range responses {
-        fmt.Println("Time:", response.Time)
-        fmt.Println("Status:", response.Status)
-        for _, tweet := range response.Result {
-            fmt.Println("Auther:", tweet.Auther)
-            fmt.Println("Created At:", tweet.CreatedAt)
-            fmt.Println("ID:", tweet.ID)
-            fmt.Println("Text:", tweet.Text)
-        }
-    }
-    fmt.Println("Fin1.")
-
     response := responses[0] // responsesの要素は1つの想定
     var tweets []Tweet = response.Result
-    fmt.Println("Fin.")
     return tweets, nil
     }
 
