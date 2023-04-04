@@ -7,6 +7,7 @@ import "./App.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ShareIcon from "@mui/icons-material/Share";
+import { Button, TextField } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -17,6 +18,13 @@ import IconButton from "@mui/material/IconButton";
 
 function App() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
+
+  const [name, setName] = useState("");
+
+  const handleSubmit = (event: React.MouseEvent) => {
+    event.preventDefault();
+    console.log(`Name: ${name}`);
+  };
 
   useEffect(() => {
     fetch("http://localhost:8006/tweets")
@@ -74,6 +82,18 @@ function App() {
           </div>
         ))}
       </div>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          margin="normal"
+          variant="outlined"
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Submit
+        </Button>
+      </form>
     </div>
   );
 }
