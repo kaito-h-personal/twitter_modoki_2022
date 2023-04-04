@@ -23,18 +23,18 @@ type User struct {
 }
 
 type Tweet struct {
-	User      User   `json:"user"`
-	CreatedAt string `json:"created_at"`
 	Id        string `json:"id"`
 	Text      string `json:"text"`
+	CreatedAt string `json:"created_at"`
+	User      User   `json:"user"`
 }
 
 type AddTweet struct {
-	UserId string `json:"user_id"`
 	Text   string `json:"text"`
+	UserId string `json:"user_id"`
 }
 
-type Response struct {
+type QueryResult struct {
 	Time   string  `json:"time"`
 	Status string  `json:"status"`
 	Result []Tweet `json:"result"`
@@ -97,15 +97,15 @@ func fetch_tweets() ([]TweetResponse, error) {
 	fmt.Println(jsonString)
 
 	// 構造体に変換
-	var responses []Response
-	err = json.Unmarshal([]byte(jsonString), &responses)
+	var queryResult []QueryResult
+	err = json.Unmarshal([]byte(jsonString), &queryResult)
 	if err != nil {
 		fmt.Println(err)
 		return []TweetResponse{}, err
 	}
 
-	response := responses[0] // responsesの要素は1つの想定
-	var tweets []Tweet = response.Result
+	r := queryResult[0] // queryResultの要素は1つの想定
+	var tweets []Tweet = r.Result
 	fmt.Println("tweets")
 	fmt.Println(tweets)
 
