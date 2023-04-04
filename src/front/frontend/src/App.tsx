@@ -24,6 +24,22 @@ function App() {
   const handleSubmit = (event: React.MouseEvent) => {
     event.preventDefault();
     console.log(`Name: ${name}`);
+    fetch("http://localhost:8006/add_tweets", {
+      method: "POST",
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      body: JSON.stringify({
+        name: "John Doe",
+        email: "johndoe@example.com",
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setTweets(data);
+      })
+      .catch((error) => console.error(error));
   };
 
   useEffect(() => {

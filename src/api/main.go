@@ -57,6 +57,7 @@ func main() {
     // TODO: 上記で取得したものを返す
 
     http.HandleFunc("/tweets", tweetsHandler)
+    http.HandleFunc("/add_tweets", addTweetsHandler)
 
     log.Fatal(http.ListenAndServe(":8007", nil))
 }
@@ -125,6 +126,33 @@ func tweetsHandler(w http.ResponseWriter, r *http.Request) {
             CreatedAt: "2023-04-01T16:19:07.287544979Z",
             ID:        "tweet:2",
             Text:      "I'm sleepy.",
+        },
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+    json.NewEncoder(w).Encode(tweets)
+}
+
+func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
+    tweets := []Tweet{
+        {
+            Auther:    1,
+            CreatedAt: "2023-04-01T16:18:18.419644996Z",
+            ID:        "tweet:1",
+            Text:      "I got it.",
+        },
+        {
+            Auther:    2,
+            CreatedAt: "2023-04-01T16:19:07.287544979Z",
+            ID:        "tweet:2",
+            Text:      "I'm sleepy.",
+        },
+        {
+            Auther:    3,
+            CreatedAt: "2023-04-01T16:19:07.287544979Z",
+            ID:        "tweet:3",
+            Text:      "テスト3",
         },
     }
 
