@@ -31,32 +31,25 @@ type Response struct {
 
 func main() {
     // デフォルトのtweetをセット
-    query := "DELETE tweet;"
-    _, err := sendQuery(query)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    query = `
+    query := `
+        DELETE tweet;
         CREATE tweet SET
             auther = 1
             ,text = 'テスト内容1'
             ,created_at = time::now()
-        ;`
-    _, err = sendQuery(query)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    query = `
+        ;
         CREATE tweet SET
             auther = 2
             ,text = 'テスト内容2'
             ,created_at = time::now()
-        ;`
-    _, err = sendQuery(query)
+        ;
+        CREATE tweet SET
+            auther = 3
+            ,text = 'テスト内容3'
+            ,created_at = time::now()
+        ;
+    `
+    _, err := sendQuery(query)
     if err != nil {
         fmt.Println(err)
         return
