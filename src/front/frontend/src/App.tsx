@@ -30,7 +30,7 @@ function App() {
       //   "Content-Type": "application/json",
       // },
       body: JSON.stringify({
-        user_id: 6,
+        user_id: "user:6", // 決めうち
         text: name,
       }),
     })

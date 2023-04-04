@@ -30,7 +30,7 @@ type Tweet struct {
 }
 
 type AddTweet struct {
-	UserId int    `json:"user_id"`
+	UserId string    `json:"user_id"`
 	Text   string `json:"text"`
 }
 
@@ -184,11 +184,10 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	JST := time.FixedZone("Asia/Tokyo", 9*60*60)
 	now := time.Now().In(JST).Format("2006/01/02 15:04:05") // Goは「2006/01/02 15:04:05」でフォーマットを指定する
 
-	// TODO: 将来的に「user = %s」になる予定
 	// TODO: SQLインジェクション対策
 	query := fmt.Sprintf(`
         CREATE tweet SET
-            user = user:%d
+            user = %s
             ,text = '%s'
             ,created_at = '%s'
         ;`, addTweet.UserId, addTweet.Text, now)
