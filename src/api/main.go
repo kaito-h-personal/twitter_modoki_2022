@@ -10,6 +10,7 @@ import (
 )
 
 type TweetResponse struct {
+    Id string `json:"id"`
     UserName       string    `json:"user_name"`
     CreatedAt  string `json:"created_at"`
     Text       string `json:"text"`
@@ -23,12 +24,12 @@ type User struct {
 type Tweet struct {
     User       User    `json:"user"`
     CreatedAt  string `json:"created_at"`
-    ID         string `json:"id"`
+    Id         string `json:"id"`
     Text       string `json:"text"`
 }
 
 type AddTweet struct {
-    Auther     int    `json:"auther"`
+    UserId     int    `json:"user_id"`
     Text       string `json:"text"`
 }
 
@@ -62,6 +63,10 @@ func main() {
             user = user:3
             ,text = 'テスト内容2'
             ,created_at = time::now()
+        ;
+        CREATE user SET
+            id = 6
+            ,name = 'ユーザー6'
         ;
     `
     _, err := sendQuery(query)
@@ -110,6 +115,7 @@ func fetch_tweets() ([]TweetResponse, error) {
 
     for _, t := range tweets {
         tr := TweetResponse{
+            Id: t.Id,
             UserName: t.User.Name,
             CreatedAt: t.CreatedAt,
             Text: t.Text,
@@ -181,10 +187,10 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
     // TODO: SQLインジェクション対策
     query := fmt.Sprintf(`
         CREATE tweet SET
-            auther = %d
+            user = user:%d
             ,text = '%s'
             ,created_at = time::now()
-        ;`, addTweet.Auther, addTweet.Text)
+        ;`, addTweet.UserId, addTweet.Text)
 
     fmt.Println("query")
     fmt.Println(query)

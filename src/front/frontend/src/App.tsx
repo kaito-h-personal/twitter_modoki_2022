@@ -30,7 +30,7 @@ function App() {
       //   "Content-Type": "application/json",
       // },
       body: JSON.stringify({
-        auther: 6,
+        user_id: 6,
         text: name,
       }),
     })
@@ -50,7 +50,7 @@ function App() {
 
   type Tweet = {
     id: string;
-    auther: number;
+    user_name: string;
     created_at: string;
     text: string;
   };
@@ -72,7 +72,7 @@ function App() {
                     <MoreVertIcon />
                   </IconButton>
                 }
-                title={tweet.auther}
+                title={tweet.user_name}
                 subheader={tweet.created_at}
               />
               <CardContent>
