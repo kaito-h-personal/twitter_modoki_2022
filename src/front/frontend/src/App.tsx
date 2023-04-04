@@ -30,8 +30,8 @@ function App() {
       //   "Content-Type": "application/json",
       // },
       body: JSON.stringify({
-        name: "John Doe",
-        email: "johndoe@example.com",
+        auther: 6,
+        text: "テスト内容",
       }),
     })
       .then((response) => response.json())

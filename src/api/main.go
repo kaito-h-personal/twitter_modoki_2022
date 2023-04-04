@@ -16,6 +16,11 @@ type Tweet struct {
     Text       string `json:"text"`
 }
 
+type AddTweet struct {
+    Auther     int    `json:"auther"`
+    Text       string `json:"text"`
+}
+
 
 
 type Response struct {
@@ -135,6 +140,14 @@ func tweetsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
+    var addTweet AddTweet
+    err := json.NewDecoder(r.Body).Decode(&addTweet)
+    if err != nil {
+    fmt.Println(err.Error())
+    http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
     tweets := []Tweet{
         {
             Auther:    1,
@@ -152,7 +165,7 @@ func addTweetsHandler(w http.ResponseWriter, r *http.Request) {
             Auther:    3,
             CreatedAt: "2023-04-01T16:19:07.287544979Z",
             ID:        "tweet:3",
-            Text:      "テスト3",
+            Text:      addTweet.Text,
         },
     }
 
