@@ -13,7 +13,6 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import { red } from "@mui/material/colors";
 import IconButton from "@mui/material/IconButton";
 
 function App() {
@@ -62,14 +61,14 @@ function App() {
   return (
     <div className="App">
       <div>
-        <img src={icon_img} />
         {tweets.map((tweet) => (
           <div key={tweet.id}>
             <Card sx={{ maxWidth: 345 }}>
               <CardHeader
                 avatar={
-                  <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                    {tweet.user_name.slice(0, 2)}
+                  <Avatar aria-label="recipe">
+                    <img src={icon_img} width="50" height="50" />
+                    {/* TODO: サイズの指定の仕方 */}
                   </Avatar>
                 }
                 action={
