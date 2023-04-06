@@ -35,6 +35,7 @@ type TweetResponse struct {
 	Text      string `json:"text"`
 	CreatedAt string `json:"created_at"`
 	UserName  string `json:"user_name"`
+    IconImg   string `json:"icon_img"`
 }
 
 type AddTweet struct {
@@ -110,6 +111,12 @@ func fetch_tweets() ([]TweetResponse, error) {
 	fmt.Println("tweets")
 	fmt.Println(tweets)
 
+    icon_img, err := LoadImage("dummy")
+	if err != nil {
+		fmt.Println(err.Error())
+		return []TweetResponse{}, err
+	}
+
 	var tweetResponses []TweetResponse
 
 	for _, t := range tweets {
@@ -118,6 +125,7 @@ func fetch_tweets() ([]TweetResponse, error) {
 			Text:      t.Text,
 			CreatedAt: t.CreatedAt,
 			UserName:  t.User.Name,
+            IconImg:   icon_img,
 		}
 		tweetResponses = append(tweetResponses, tr)
 
@@ -160,11 +168,6 @@ func executeQuery(query string) (string, error) {
 	return string(body), nil
 }
 
-type Hoge struct {
-    Tweets []TweetResponse `json:"tweets"`
-    Img string `json:"img"`
-}
-
 func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
@@ -175,19 +178,7 @@ func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    aaa, err := LoadImage("dummy") 
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-    hoge := Hoge{
-        Tweets: tweets,
-        Img: aaa,
-    }
-
-
-	json.NewEncoder(w).Encode(hoge)
+	json.NewEncoder(w).Encode(tweets)
 }
 
 func addTweetHandler(w http.ResponseWriter, r *http.Request) {

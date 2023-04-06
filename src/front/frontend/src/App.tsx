@@ -17,7 +17,6 @@ import IconButton from "@mui/material/IconButton";
 
 function App() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
-  const [icon_img, setIconImg] = useState<string>("");
 
   const [name, setName] = useState("");
 
@@ -45,10 +44,7 @@ function App() {
   useEffect(() => {
     fetch("http://localhost:8006/tweets")
       .then((response) => response.json())
-      .then((data) => {
-        setTweets(data.tweets);
-        setIconImg("data:image/png;base64," + data.img);
-      });
+      .then((data) => setTweets(data));
   }, []);
 
   type Tweet = {
@@ -56,6 +52,7 @@ function App() {
     user_name: string;
     created_at: string;
     text: string;
+    icon_img: string;
   };
 
   return (
@@ -67,7 +64,11 @@ function App() {
               <CardHeader
                 avatar={
                   <Avatar aria-label="recipe">
-                    <img src={icon_img} width="50" height="50" />
+                    <img
+                      src={"data:image/png;base64," + tweet.icon_img}
+                      width="50"
+                      height="50"
+                    />
                     {/* TODO: サイズの指定の仕方 */}
                   </Avatar>
                 }
