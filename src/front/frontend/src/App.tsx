@@ -18,6 +18,7 @@ import IconButton from "@mui/material/IconButton";
 
 function App() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [icon_img, setIconImg] = useState<string>("");
 
   const [name, setName] = useState("");
 
@@ -45,7 +46,10 @@ function App() {
   useEffect(() => {
     fetch("http://localhost:8006/tweets")
       .then((response) => response.json())
-      .then((data) => setTweets(data));
+      .then((data) => {
+        setTweets(data.tweets);
+        setIconImg("data:image/png;base64," + data.img);
+      });
   }, []);
 
   type Tweet = {
@@ -58,6 +62,7 @@ function App() {
   return (
     <div className="App">
       <div>
+        <img src={icon_img} />
         {tweets.map((tweet) => (
           <div key={tweet.id}>
             <Card sx={{ maxWidth: 345 }}>

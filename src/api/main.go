@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+    "encoding/base64"
+    "os"
 )
 
 type User struct {
@@ -75,7 +77,7 @@ func main() {
 	}
 	fmt.Println("デフォルトのtweetをセット")
 
-	_, _ = fetch_tweets() // 後で消す
+	// _, _ = fetch_tweets() // 後で消す
 
 	http.HandleFunc("/tweets", fetchTweetsHandler)
 	http.HandleFunc("/add_tweets", addTweetHandler)
@@ -158,6 +160,11 @@ func executeQuery(query string) (string, error) {
 	return string(body), nil
 }
 
+type Hoge struct {
+    Tweets []TweetResponse `json:"tweets"`
+    Img string `json:"img"`
+}
+
 func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
@@ -168,7 +175,19 @@ func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(tweets)
+    aaa, err := LoadImage("dummy") 
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+    hoge := Hoge{
+        Tweets: tweets,
+        Img: aaa,
+    }
+
+
+	json.NewEncoder(w).Encode(hoge)
 }
 
 func addTweetHandler(w http.ResponseWriter, r *http.Request) {
@@ -214,4 +233,26 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(tweets)
+}
+
+func LoadImage(path string) (string, error) {
+    path = "img/panda.jpeg"
+    // 画像ファイルを読み込む
+    file, err := os.Open(path)
+    if err != nil {
+        fmt.Println(err)
+        return "", err
+    }
+    defer file.Close()
+
+    // 画像ファイルをバイト配列に変換する
+    data, err := ioutil.ReadAll(file)
+    if err != nil {
+        fmt.Println(err)
+        return "", err
+    }
+
+    // バイト配列をBase64エンコードする
+    encoded := base64.StdEncoding.EncodeToString(data)
+    return encoded, nil
 }
