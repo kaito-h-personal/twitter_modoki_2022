@@ -96,9 +96,6 @@ func fetch_tweets() ([]TweetResponse, error) {
 		return []TweetResponse{}, err
 	}
 
-	fmt.Println("jsonString")
-	fmt.Println(jsonString)
-
 	// 構造体に変換
 	var queryResult []QueryResult
 	err = json.Unmarshal([]byte(jsonString), &queryResult)
@@ -108,18 +105,19 @@ func fetch_tweets() ([]TweetResponse, error) {
 	}
 
 	var tweets []Tweet = queryResult[0].Result // queryResultの要素は1つの想定
-	fmt.Println("tweets")
-	fmt.Println(tweets)
-
-    icon_img, err := LoadImage("dummy")
-	if err != nil {
-		fmt.Println(err.Error())
-		return []TweetResponse{}, err
-	}
 
 	var tweetResponses []TweetResponse
 
 	for _, t := range tweets {
+        // TODO: ここ2回呼ばれている？
+
+        // アイコンの画像を取得
+        icon_img, err := LoadImage(t.User.Id)
+        if err != nil {
+            fmt.Println(err.Error())
+            return []TweetResponse{}, err
+        }
+
 		tr := TweetResponse{
 			Id:        t.Id,
 			Text:      t.Text,
@@ -130,9 +128,6 @@ func fetch_tweets() ([]TweetResponse, error) {
 		tweetResponses = append(tweetResponses, tr)
 
 	}
-
-	fmt.Println("tweetResponses")
-	fmt.Println(tweetResponses)
 
 	return tweetResponses, nil
 
@@ -226,8 +221,8 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tweets)
 }
 
-func LoadImage(path string) (string, error) {
-    path = "img/panda.jpeg"
+func LoadImage(user_id string) (string, error) {
+    path := fmt.Sprintf("img/%s.jpeg", user_id)
     // 画像ファイルを読み込む
     file, err := os.Open(path)
     if err != nil {
@@ -247,3 +242,4 @@ func LoadImage(path string) (string, error) {
     encoded := base64.StdEncoding.EncodeToString(data)
     return encoded, nil
 }
+
