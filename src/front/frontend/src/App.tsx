@@ -63,19 +63,11 @@ function App() {
             <Card sx={{ maxWidth: 345 }}>
               <CardHeader
                 avatar={
-                  <Avatar aria-label="recipe">
-                    <img
-                      src={"data:image/png;base64," + tweet.icon_img}
-                      width="50"
-                      height="50"
-                    />
-                    {/* TODO: サイズの指定の仕方 */}
-                  </Avatar>
-                }
-                action={
-                  <IconButton aria-label="settings">
-                    <MoreVertIcon />
-                  </IconButton>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={"data:image/png;base64," + tweet.icon_img}
+                    sx={{ width: 50, height: 50 }}
+                  />
                 }
                 title={tweet.user_name}
                 subheader={tweet.created_at}
