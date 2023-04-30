@@ -5,7 +5,6 @@ import "./App.css";
 // import reactLogo from "./assets/react.svg"; //TODO: 消す
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ShareIcon from "@mui/icons-material/Share";
 import { Button, TextField } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -14,6 +13,9 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import IconButton from "@mui/material/IconButton";
+
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
 
 function App() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
@@ -57,6 +59,13 @@ function App() {
 
   return (
     <div className="App">
+      <AppBar position="relative">
+        <Toolbar>
+          <Typography variant="h6" color="inherit" noWrap>
+            Twitterもどき
+          </Typography>
+        </Toolbar>
+      </AppBar>
       <div>
         {tweets.map((tweet) => (
           <div key={tweet.id}>
