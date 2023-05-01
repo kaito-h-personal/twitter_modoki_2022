@@ -60,7 +60,11 @@ type AddTweet struct {
 
 func main() {
 	// デフォルトのtweetをセット
-	setDefaultTweets()
+	err := setDefaultTweets()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
@@ -121,7 +125,7 @@ func getIconImg(user_id string) (string, error) {
 	return encoded, nil
 }
 
-func setDefaultTweets() {
+func setDefaultTweets() (error) {
 	query := `
 		DELETE user;
 		DELETE tweet;
@@ -151,7 +155,7 @@ func setDefaultTweets() {
 	_, err := executeQuery(query)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return err
 	}
 	fmt.Println("デフォルトのtweetをセットしました")
 }
