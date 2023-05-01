@@ -6,9 +6,11 @@ import "./App.css";
 
 import Split from "@uiw/react-split";
 
+import Stack from "@mui/material/Stack";
+
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
-import { Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -61,6 +63,7 @@ function App() {
 
   return (
     <div className="App">
+      {/* ヘッダー */}
       <AppBar position="relative">
         <Toolbar>
           <Typography variant="h6" color="inherit" noWrap>
@@ -69,7 +72,8 @@ function App() {
         </Toolbar>
       </AppBar>
       <Split>
-        <div>
+        {/* 画面左側 */}
+        <div style={{ width: 1000 }}>
           {tweets.map((tweet) => (
             <div key={tweet.id}>
               <Card sx={{ maxWidth: 345 }}>
@@ -101,18 +105,33 @@ function App() {
             </div>
           ))}
         </div>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            margin="normal"
-            variant="outlined"
-          />
-          <Button type="submit" variant="contained" color="primary">
-            Submit
-          </Button>
-        </form>
+        {/* 画面右側 */}
+        <div>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
+            <div>xx さん</div>
+          </Stack>
+          <form onSubmit={handleSubmit}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ width: 500, height: 500 }}
+            >
+              <TextField
+                label="呟きたいことを入力"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                margin="normal"
+                variant="outlined"
+                multiline
+                rows={4}
+              />
+              <Button type="submit" variant="contained" color="primary">
+                投稿
+              </Button>
+            </Box>
+          </form>
+        </div>
       </Split>
     </div>
   );
