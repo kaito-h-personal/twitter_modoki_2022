@@ -4,6 +4,8 @@ import "./App.css";
 
 // import reactLogo from "./assets/react.svg"; //TODO: 消す
 
+import Split from "@uiw/react-split";
+
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import { Button, TextField } from "@mui/material";
@@ -66,50 +68,52 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <div>
-        {tweets.map((tweet) => (
-          <div key={tweet.id}>
-            <Card sx={{ maxWidth: 345 }}>
-              <CardHeader
-                avatar={
-                  <Avatar
-                    alt="Remy Sharp"
-                    src={"data:image/png;base64," + tweet.icon_img}
-                    sx={{ width: 50, height: 50 }}
-                  />
-                }
-                title={tweet.user_name}
-                subheader={tweet.created_at}
-              />
-              <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                  {tweet.text}
-                </Typography>
-              </CardContent>
-              <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                  <FavoriteIcon />
-                </IconButton>
-                <IconButton aria-label="share">
-                  <ShareIcon />
-                </IconButton>
-              </CardActions>
-            </Card>
-          </div>
-        ))}
-      </div>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          margin="normal"
-          variant="outlined"
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
-      </form>
+      <Split>
+        <div>
+          {tweets.map((tweet) => (
+            <div key={tweet.id}>
+              <Card sx={{ maxWidth: 345 }}>
+                <CardHeader
+                  avatar={
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={"data:image/png;base64," + tweet.icon_img}
+                      sx={{ width: 50, height: 50 }}
+                    />
+                  }
+                  title={tweet.user_name}
+                  subheader={tweet.created_at}
+                />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {tweet.text}
+                  </Typography>
+                </CardContent>
+                <CardActions disableSpacing>
+                  <IconButton aria-label="add to favorites">
+                    <FavoriteIcon />
+                  </IconButton>
+                  <IconButton aria-label="share">
+                    <ShareIcon />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </div>
+          ))}
+        </div>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            margin="normal"
+            variant="outlined"
+          />
+          <Button type="submit" variant="contained" color="primary">
+            Submit
+          </Button>
+        </form>
+      </Split>
     </div>
   );
 }
