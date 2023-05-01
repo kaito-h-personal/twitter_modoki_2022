@@ -24,6 +24,10 @@ import Toolbar from "@mui/material/Toolbar";
 
 function App() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [user, setUser] = useState<User>({
+    name: "名前の取得に失敗しました",
+    icon_img: "",
+  });
 
   const [name, setName] = useState("");
 
@@ -49,9 +53,21 @@ function App() {
   };
 
   useEffect(() => {
+    fetch("http://localhost:8006/user", {
+      method: "POST",
+      // TODO: http://localhost:8006/user/user:6のようにGETにする？(脆弱性？)
+      body: JSON.stringify({
+        user_id: "user:6", // 決めうち
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => setUser(data))
+      .catch((error) => console.error(error));
+
     fetch("http://localhost:8006/tweets")
       .then((response) => response.json())
-      .then((data) => setTweets(data));
+      .then((data) => setTweets(data))
+      .catch((error) => console.error(error));
   }, []);
 
   type Tweet = {
@@ -59,6 +75,11 @@ function App() {
     user_name: string;
     created_at: string;
     text: string;
+    icon_img: string;
+  };
+
+  type User = {
+    name: string;
     icon_img: string;
   };
 
@@ -86,7 +107,6 @@ function App() {
                 <CardHeader
                   avatar={
                     <Avatar
-                      alt="Remy Sharp"
                       src={"data:image/png;base64," + tweet.icon_img}
                       sx={{ width: 50, height: 50 }}
                     />
@@ -111,8 +131,11 @@ function App() {
         {/* 画面右側(fixedでスクロールしても動かないようにする) */}
         <Grid2 xs={4} position="fixed" sx={{ right: 7 }}>
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
-            <div>xx さん</div>
+            <Avatar
+              src={"data:image/png;base64," + user.icon_img}
+              sx={{ width: 50, height: 50 }}
+            />
+            <div>{user.name} さん</div>
           </Stack>
           <form onSubmit={handleSubmit}>
             <Box display="flex" flexDirection="column">

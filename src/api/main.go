@@ -12,6 +12,15 @@ import (
     "os"
 )
 
+type UserId struct {
+	UserId   string `json:"user_id"`
+}
+
+type DisplayUserInfo struct {
+	Name string `json:"name"`
+    IconImg   string `json:"icon_img"`
+}
+
 type User struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
@@ -28,6 +37,12 @@ type QueryResult struct {
 	Time   string  `json:"time"`
 	Status string  `json:"status"`
 	Result []Tweet `json:"result"`
+}
+
+type QueryResultUser struct {
+	Time   string  `json:"time"`
+	Status string  `json:"status"`
+	Result []User `json:"result"`
 }
 
 type TweetResponse struct {
@@ -80,6 +95,7 @@ func main() {
 
 	// _, _ = fetch_tweets() // 後で消す
 
+	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
 	http.HandleFunc("/add_tweets", addTweetHandler)
 
@@ -87,7 +103,6 @@ func main() {
 }
 
 func fetch_tweets() ([]TweetResponse, error) {
-	// todo: 順番が変
 	query := "SELECT * FROM tweet ORDER BY created_at DESC FETCH user;"
 
 	jsonString, err := executeQuery(query)
@@ -243,3 +258,62 @@ func LoadImage(user_id string) (string, error) {
     return encoded, nil
 }
 
+// TODO: 関数名の規則・関数の順番統一
+func fetchUser(user_id string) (DisplayUserInfo, error) {
+	// TODO: SQLインジェクション対策
+	query := fmt.Sprintf("SELECT id, name FROM user WHERE id=\"%s\";", user_id)
+
+	jsonString, err := executeQuery(query)
+	if err != nil {
+		fmt.Println(err)
+		return DisplayUserInfo{}, err
+	}
+
+	// 構造体に変換
+	var queryResult []QueryResultUser
+	err = json.Unmarshal([]byte(jsonString), &queryResult)
+	if err != nil {
+		fmt.Println(err)
+		return DisplayUserInfo{}, err
+	}
+
+	var user User = queryResult[0].Result[0] // queryResult及びResultの要素は1つの想定
+
+	// アイコンの画像を取得
+	icon_img, err := LoadImage(user_id)
+	if err != nil {
+		fmt.Println(err.Error())
+		return DisplayUserInfo{}, err
+	}
+
+	result := DisplayUserInfo{
+		Name:      user.Name,
+		IconImg:   icon_img,
+	}
+
+	return result, nil
+}
+
+
+func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("呼ばれた")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+	var user_id UserId
+	err := json.NewDecoder(r.Body).Decode(&user_id)
+	if err != nil {
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user_info, err := fetchUser(user_id.UserId)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	json.NewEncoder(w).Encode(user_info)
+}
