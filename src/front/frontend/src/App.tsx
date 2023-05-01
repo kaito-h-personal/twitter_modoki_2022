@@ -4,6 +4,8 @@ import "./App.css";
 
 // import reactLogo from "./assets/react.svg"; //TODO: 消す
 
+import { useTheme } from "@mui/material/styles";
+
 import Split from "@uiw/react-split";
 
 import Stack from "@mui/material/Stack";
@@ -61,78 +63,80 @@ function App() {
     icon_img: string;
   };
 
+  const theme = useTheme();
+  const appBarHeight = theme.mixins.toolbar.minHeight;
+
   return (
     <div className="App">
       {/* ヘッダー */}
-      <AppBar position="relative">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" color="inherit" noWrap>
             Twitterもどき
           </Typography>
         </Toolbar>
       </AppBar>
-      <Split>
-        {/* 画面左側 */}
-        <div style={{ width: 1000 }}>
-          {tweets.map((tweet) => (
-            <div key={tweet.id}>
-              <Card sx={{ maxWidth: 345 }}>
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      alt="Remy Sharp"
-                      src={"data:image/png;base64," + tweet.icon_img}
-                      sx={{ width: 50, height: 50 }}
-                    />
-                  }
-                  title={tweet.user_name}
-                  subheader={tweet.created_at}
+      <div style={{ marginTop: appBarHeight }}>
+        {/* <div> */}
+        <Split lineBar>
+          {/* 画面左側 */}
+          <div style={{ width: 1000 }}>
+            {tweets.map((tweet) => (
+              <div key={tweet.id}>
+                <Card sx={{ maxWidth: 345 }}>
+                  <CardHeader
+                    avatar={
+                      <Avatar
+                        alt="Remy Sharp"
+                        src={"data:image/png;base64," + tweet.icon_img}
+                        sx={{ width: 50, height: 50 }}
+                      />
+                    }
+                    title={tweet.user_name}
+                    subheader={tweet.created_at}
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      {tweet.text}
+                    </Typography>
+                  </CardContent>
+                  <CardActions disableSpacing>
+                    <IconButton aria-label="add to favorites">
+                      <FavoriteIcon />
+                    </IconButton>
+                    <IconButton aria-label="share">
+                      <ShareIcon />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              </div>
+            ))}
+          </div>
+          {/* 画面右側 */}
+          <div style={{ position: "fixed", right: 2 }}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
+              <div>xx さん</div>
+            </Stack>
+            <form onSubmit={handleSubmit}>
+              <Box display="flex" flexDirection="column" sx={{ width: 500 }}>
+                <TextField
+                  label="呟きたいことを入力"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  margin="normal"
+                  variant="outlined"
+                  multiline
+                  rows={4}
                 />
-                <CardContent>
-                  <Typography variant="body2" color="text.secondary">
-                    {tweet.text}
-                  </Typography>
-                </CardContent>
-                <CardActions disableSpacing>
-                  <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
-                  </IconButton>
-                  <IconButton aria-label="share">
-                    <ShareIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </div>
-          ))}
-        </div>
-        {/* 画面右側 */}
-        <div>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
-            <div>xx さん</div>
-          </Stack>
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              sx={{ width: 500, height: 500 }}
-            >
-              <TextField
-                label="呟きたいことを入力"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                margin="normal"
-                variant="outlined"
-                multiline
-                rows={4}
-              />
-              <Button type="submit" variant="contained" color="primary">
-                投稿
-              </Button>
-            </Box>
-          </form>
-        </div>
-      </Split>
+                <Button type="submit" variant="contained" color="primary">
+                  投稿
+                </Button>
+              </Box>
+            </form>
+          </div>
+        </Split>
+      </div>
     </div>
   );
 }
