@@ -2,23 +2,23 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
-    "encoding/base64"
-    "os"
 )
 
 type UserId struct {
-	UserId   string `json:"user_id"`
+	UserId string `json:"user_id"`
 }
 
 type DisplayUserInfo struct {
-	Name string `json:"name"`
-    IconImg   string `json:"icon_img"`
+	Name    string `json:"name"`
+	IconImg string `json:"icon_img"`
 }
 
 type User struct {
@@ -40,8 +40,8 @@ type QueryResult struct {
 }
 
 type QueryResultUser struct {
-	Time   string  `json:"time"`
-	Status string  `json:"status"`
+	Time   string `json:"time"`
+	Status string `json:"status"`
 	Result []User `json:"result"`
 }
 
@@ -50,7 +50,7 @@ type TweetResponse struct {
 	Text      string `json:"text"`
 	CreatedAt string `json:"created_at"`
 	UserName  string `json:"user_name"`
-    IconImg   string `json:"icon_img"`
+	IconImg   string `json:"icon_img"`
 }
 
 type AddTweet struct {
@@ -93,59 +93,11 @@ func main() {
 	}
 	fmt.Println("デフォルトのtweetをセット")
 
-	// _, _ = fetch_tweets() // 後で消す
-
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
 	http.HandleFunc("/add_tweets", addTweetHandler)
 
 	log.Fatal(http.ListenAndServe(":8007", nil))
-}
-
-func fetch_tweets() ([]TweetResponse, error) {
-	query := "SELECT * FROM tweet ORDER BY created_at DESC FETCH user;"
-
-	jsonString, err := executeQuery(query)
-	if err != nil {
-		fmt.Println(err)
-		return []TweetResponse{}, err
-	}
-
-	// 構造体に変換
-	var queryResult []QueryResult
-	err = json.Unmarshal([]byte(jsonString), &queryResult)
-	if err != nil {
-		fmt.Println(err)
-		return []TweetResponse{}, err
-	}
-
-	var tweets []Tweet = queryResult[0].Result // queryResultの要素は1つの想定
-
-	var tweetResponses []TweetResponse
-
-	for _, t := range tweets {
-        // TODO: ここ2回呼ばれている？
-
-        // アイコンの画像を取得
-        icon_img, err := LoadImage(t.User.Id)
-        if err != nil {
-            fmt.Println(err.Error())
-            return []TweetResponse{}, err
-        }
-
-		tr := TweetResponse{
-			Id:        t.Id,
-			Text:      t.Text,
-			CreatedAt: t.CreatedAt,
-			UserName:  t.User.Name,
-            IconImg:   icon_img,
-		}
-		tweetResponses = append(tweetResponses, tr)
-
-	}
-
-	return tweetResponses, nil
-
 }
 
 func executeQuery(query string) (string, error) {
@@ -178,11 +130,89 @@ func executeQuery(query string) (string, error) {
 	return string(body), nil
 }
 
+func getIconImg(user_id string) (string, error) {
+	path := fmt.Sprintf("img/%s.jpeg", user_id)
+	// 画像ファイルを読み込む
+	file, err := os.Open(path)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	defer file.Close()
+
+	// 画像ファイルをバイト配列に変換する
+	data, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	// バイト配列をBase64エンコードする
+	encoded := base64.StdEncoding.EncodeToString(data)
+	return encoded, nil
+}
+
+func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+	var user_id UserId
+	err := json.NewDecoder(r.Body).Decode(&user_id)
+	if err != nil {
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user_info, err := fetchUser(user_id.UserId)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	json.NewEncoder(w).Encode(user_info)
+}
+
+func fetchUser(user_id string) (DisplayUserInfo, error) {
+	// TODO: SQLインジェクション対策
+	query := fmt.Sprintf("SELECT id, name FROM user WHERE id=\"%s\";", user_id)
+
+	jsonString, err := executeQuery(query)
+	if err != nil {
+		fmt.Println(err)
+		return DisplayUserInfo{}, err
+	}
+
+	// 構造体に変換
+	var queryResult []QueryResultUser
+	err = json.Unmarshal([]byte(jsonString), &queryResult)
+	if err != nil {
+		fmt.Println(err)
+		return DisplayUserInfo{}, err
+	}
+
+	var user User = queryResult[0].Result[0] // queryResult及びResultの要素は1つの想定
+
+	// アイコンの画像を取得
+	icon_img, err := getIconImg(user_id)
+	if err != nil {
+		fmt.Println(err.Error())
+		return DisplayUserInfo{}, err
+	}
+
+	result := DisplayUserInfo{
+		Name:    user.Name,
+		IconImg: icon_img,
+	}
+
+	return result, nil
+}
+
 func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
-	tweets, err := fetch_tweets()
+	tweets, err := fetchTweets()
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -191,8 +221,54 @@ func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tweets)
 }
 
+func fetchTweets() ([]TweetResponse, error) {
+	query := "SELECT * FROM tweet ORDER BY created_at DESC FETCH user;"
+
+	jsonString, err := executeQuery(query)
+	if err != nil {
+		fmt.Println(err)
+		return []TweetResponse{}, err
+	}
+
+	// 構造体に変換
+	var queryResult []QueryResult
+	err = json.Unmarshal([]byte(jsonString), &queryResult)
+	if err != nil {
+		fmt.Println(err)
+		return []TweetResponse{}, err
+	}
+
+	var tweets []Tweet = queryResult[0].Result // queryResultの要素は1つの想定
+
+	var tweetResponses []TweetResponse
+
+	for _, t := range tweets {
+		// TODO: ここ2回呼ばれている？
+
+		// アイコンの画像を取得
+		icon_img, err := getIconImg(t.User.Id)
+		if err != nil {
+			fmt.Println(err.Error())
+			return []TweetResponse{}, err
+		}
+
+		tr := TweetResponse{
+			Id:        t.Id,
+			Text:      t.Text,
+			CreatedAt: t.CreatedAt,
+			UserName:  t.User.Name,
+			IconImg:   icon_img,
+		}
+		tweetResponses = append(tweetResponses, tr)
+
+	}
+
+	return tweetResponses, nil
+
+}
+
 func addTweetHandler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
 	var addTweet AddTweet
@@ -227,91 +303,11 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("add_result")
 	fmt.Println(add_result)
 
-	tweets, err := fetch_tweets()
+	tweets, err := fetchTweets()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	json.NewEncoder(w).Encode(tweets)
-}
-
-func LoadImage(user_id string) (string, error) {
-    path := fmt.Sprintf("img/%s.jpeg", user_id)
-    // 画像ファイルを読み込む
-    file, err := os.Open(path)
-    if err != nil {
-        fmt.Println(err)
-        return "", err
-    }
-    defer file.Close()
-
-    // 画像ファイルをバイト配列に変換する
-    data, err := ioutil.ReadAll(file)
-    if err != nil {
-        fmt.Println(err)
-        return "", err
-    }
-
-    // バイト配列をBase64エンコードする
-    encoded := base64.StdEncoding.EncodeToString(data)
-    return encoded, nil
-}
-
-// TODO: 関数名の規則・関数の順番統一
-func fetchUser(user_id string) (DisplayUserInfo, error) {
-	// TODO: SQLインジェクション対策
-	query := fmt.Sprintf("SELECT id, name FROM user WHERE id=\"%s\";", user_id)
-
-	jsonString, err := executeQuery(query)
-	if err != nil {
-		fmt.Println(err)
-		return DisplayUserInfo{}, err
-	}
-
-	// 構造体に変換
-	var queryResult []QueryResultUser
-	err = json.Unmarshal([]byte(jsonString), &queryResult)
-	if err != nil {
-		fmt.Println(err)
-		return DisplayUserInfo{}, err
-	}
-
-	var user User = queryResult[0].Result[0] // queryResult及びResultの要素は1つの想定
-
-	// アイコンの画像を取得
-	icon_img, err := LoadImage(user_id)
-	if err != nil {
-		fmt.Println(err.Error())
-		return DisplayUserInfo{}, err
-	}
-
-	result := DisplayUserInfo{
-		Name:      user.Name,
-		IconImg:   icon_img,
-	}
-
-	return result, nil
-}
-
-
-func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-
-	var user_id UserId
-	err := json.NewDecoder(r.Body).Decode(&user_id)
-	if err != nil {
-		fmt.Println(err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	user_info, err := fetchUser(user_id.UserId)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	json.NewEncoder(w).Encode(user_info)
 }
