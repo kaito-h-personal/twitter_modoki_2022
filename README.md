@@ -64,6 +64,8 @@ curl --request POST --header "Accept: application/json" --header "NS: test" --he
 ```
 - 追加インストール
   - `npm install @mui/icons-material`
+  - `npm install @uiw/react-split`
+    - TODO: 使わなくなったので削除
 - apiコンテナ内で`curl db:8009`で疎通確認
   - `http://db:8009/sql`でも可？
 - `curl -k -L -s --compressed POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "INFO FOR DB;" http://db:8

@@ -6,9 +6,9 @@ import "./App.css";
 
 import { useTheme } from "@mui/material/styles";
 
-import Split from "@uiw/react-split";
-
 import Stack from "@mui/material/Stack";
+
+import Grid2 from "@mui/material/Unstable_Grid2";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -76,10 +76,11 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <div style={{ marginTop: appBarHeight }}>
-        {/* <div> */}
-        <Split lineBar>
-          {/* 画面左側 */}
+      {/* ヘッダーの分の余白を挿入 */}
+      <div style={{ marginTop: appBarHeight }} />
+      <Grid2 container>
+        {/* 画面左側 */}
+        <Grid2 xs={8}>
           <div style={{ width: 1000 }}>
             {tweets.map((tweet) => (
               <div key={tweet.id}>
@@ -112,31 +113,31 @@ function App() {
               </div>
             ))}
           </div>
-          {/* 画面右側 */}
-          <div style={{ position: "fixed", right: 2 }}>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
-              <div>xx さん</div>
-            </Stack>
-            <form onSubmit={handleSubmit}>
-              <Box display="flex" flexDirection="column" sx={{ width: 500 }}>
-                <TextField
-                  label="呟きたいことを入力"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  margin="normal"
-                  variant="outlined"
-                  multiline
-                  rows={4}
-                />
-                <Button type="submit" variant="contained" color="primary">
-                  投稿
-                </Button>
-              </Box>
-            </form>
-          </div>
-        </Split>
-      </div>
+        </Grid2>
+        {/* 画面右側 */}
+        <Grid2 xs={4}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
+            <div>xx さん</div>
+          </Stack>
+          <form onSubmit={handleSubmit}>
+            <Box display="flex" flexDirection="column" sx={{ width: 500 }}>
+              <TextField
+                label="呟きたいことを入力"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                margin="normal"
+                variant="outlined"
+                multiline
+                rows={4}
+              />
+              <Button type="submit" variant="contained" color="primary">
+                投稿
+              </Button>
+            </Box>
+          </form>
+        </Grid2>
+      </Grid2>
     </div>
   );
 }
