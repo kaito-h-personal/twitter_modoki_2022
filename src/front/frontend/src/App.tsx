@@ -121,7 +121,7 @@ function App() {
             <div>xx さん</div>
           </Stack>
           <form onSubmit={handleSubmit}>
-            <Box display="flex" flexDirection="column" sx={{ width: 500 }}>
+            <Box display="flex" flexDirection="column">
               <TextField
                 label="呟きたいことを入力"
                 value={name}
