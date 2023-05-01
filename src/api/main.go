@@ -88,7 +88,7 @@ func main() {
 
 func fetch_tweets() ([]TweetResponse, error) {
 	// todo: 順番が変
-	query := "SELECT * FROM tweet ORDER BY tweet.created_at DESC FETCH user;"
+	query := "SELECT * FROM tweet ORDER BY created_at DESC FETCH user;"
 
 	jsonString, err := executeQuery(query)
 	if err != nil {
