@@ -23,36 +23,48 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
 function App() {
-  const [tweets, setTweets] = useState<Tweet[]>([]);
+  const theme = useTheme();
+  const appBarHeight = theme.mixins.toolbar.minHeight;
+
+  type User = {
+    name: string;
+    icon_img: string;
+  };
+
+  type Tweet = {
+    id: string;
+    user_name: string;
+    created_at: string;
+    text: string;
+    icon_img: string;
+  };
+
   const [user, setUser] = useState<User>({
-    name: "名前の取得に失敗しました",
+    name: "ユーザー名の取得に失敗しました",
     icon_img: "",
   });
 
-  const [name, setName] = useState("");
+  const [tweets, setTweets] = useState<Tweet[]>([]);
 
+  const [inputTweetText, setInputTweetText] = useState("");
+
+  // tweetを投稿
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    console.log(`Name: ${name}`);
     fetch("http://localhost:8006/add_tweets", {
       method: "POST",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
       body: JSON.stringify({
         user_id: "user:6", // 決めうち
-        text: name,
+        text: inputTweetText,
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setTweets(data);
-      })
+      .then((data) => setTweets(data))
       .catch((error) => console.error(error));
   };
 
   useEffect(() => {
+    // ユーザー情報を取得
     fetch("http://localhost:8006/user", {
       method: "POST",
       // TODO: http://localhost:8006/user/user:6のようにGETにする？(脆弱性？)
@@ -64,27 +76,12 @@ function App() {
       .then((data) => setUser(data))
       .catch((error) => console.error(error));
 
+    // tweet一覧を取得
     fetch("http://localhost:8006/tweets")
       .then((response) => response.json())
       .then((data) => setTweets(data))
       .catch((error) => console.error(error));
   }, []);
-
-  type Tweet = {
-    id: string;
-    user_name: string;
-    created_at: string;
-    text: string;
-    icon_img: string;
-  };
-
-  type User = {
-    name: string;
-    icon_img: string;
-  };
-
-  const theme = useTheme();
-  const appBarHeight = theme.mixins.toolbar.minHeight;
 
   return (
     <div className="App">
@@ -141,8 +138,8 @@ function App() {
             <Box display="flex" flexDirection="column">
               <TextField
                 label="呟きたいことを入力"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
+                value={inputTweetText}
+                onChange={(event) => setInputTweetText(event.target.value)}
                 margin="normal"
                 variant="outlined"
                 multiline
