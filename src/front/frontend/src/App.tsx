@@ -76,7 +76,7 @@ function App() {
         </Toolbar>
       </AppBar>
       {/* ヘッダーの分の余白を挿入 */}
-      <div style={{ marginTop: appBarHeight }} />
+      <div style={{ marginTop: appBarHeight, paddingTop: 20 }} />
       <Grid2 container>
         {/* 画面左側 */}
         <Grid2 xs={8}>
@@ -108,8 +108,8 @@ function App() {
             </div>
           ))}
         </Grid2>
-        {/* 画面右側 */}
-        <Grid2 xs={4}>
+        {/* 画面右側(fixedでスクロールしても動かないようにする) */}
+        <Grid2 xs={4} position="fixed" sx={{ right: 7 }}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar alt="x" src="x" sx={{ width: 50, height: 50 }} />
             <div>xx さん</div>
