@@ -5,7 +5,11 @@ ARG API_CODE_WORKDIR=${API_CODE_WORKDIR}
 
 FROM golang:${GO_DOCKER_IMAGE_VERSION}
 
-RUN apk update && apk add git alpine-sdk
+RUN apk update \
+    && apk add git alpine-sdk \
+    && go install github.com/cosmtrek/air@latest
 
 # ワーキングディレクトリの設定(TODO: WORKDIRはENVを使わないと変数展開できない)
 WORKDIR /src
+
+CMD ["/bin/sh", "-c", "air"]
