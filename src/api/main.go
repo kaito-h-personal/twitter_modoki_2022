@@ -60,38 +60,7 @@ type AddTweet struct {
 
 func main() {
 	// デフォルトのtweetをセット
-	query := `
-        DELETE user;
-        DELETE tweet;
-        CREATE user SET
-            id = 1
-            ,name = 'ユーザー1'
-        ;
-        CREATE user SET
-            id = 3
-            ,name = 'ユーザー3'
-        ;
-        CREATE tweet SET
-            user = user:1
-            ,text = 'テスト内容1'
-            ,created_at = '2006/01/02 15:04:05'
-        ;
-        CREATE tweet SET
-            user = user:3
-            ,text = 'テスト内容2'
-            ,created_at = '2009/01/02 15:04:05'
-        ;
-        CREATE user SET
-            id = 6
-            ,name = 'ユーザー6'
-        ;
-    `
-	_, err := executeQuery(query)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("デフォルトのtweetをセット")
+	setDefaultTweets()
 
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
@@ -150,6 +119,41 @@ func getIconImg(user_id string) (string, error) {
 	// バイト配列をBase64エンコードする
 	encoded := base64.StdEncoding.EncodeToString(data)
 	return encoded, nil
+}
+
+func setDefaultTweets() {
+	query := `
+		DELETE user;
+		DELETE tweet;
+		CREATE user SET
+			id = 1
+			,name = 'ユーザー1'
+		;
+		CREATE user SET
+			id = 3
+			,name = 'ユーザー3'
+		;
+		CREATE tweet SET
+			user = user:1
+			,text = 'テスト内容1'
+			,created_at = '2006/01/02 15:04:05'
+		;
+		CREATE tweet SET
+			user = user:3
+			,text = 'テスト内容2'
+			,created_at = '2009/01/02 15:04:05'
+		;
+		CREATE user SET
+			id = 6
+			,name = 'ユーザー6'
+		;
+	`
+	_, err := executeQuery(query)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("デフォルトのtweetをセットしました")
 }
 
 func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
