@@ -31,7 +31,7 @@ function App() {
 
   const [name, setName] = useState("");
 
-  const handleSubmit = (event: React.MouseEvent) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log(`Name: ${name}`);
     fetch("http://localhost:8006/add_tweets", {
