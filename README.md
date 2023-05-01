@@ -35,51 +35,35 @@
 4. DB導入
 5. 機能を詰める
 
-## メモ
+## 構築メモ
+### API
 - Goのローカルサーバー
-  - コンテナに入って`go run main.go` # TODO: 起動時に実行するようにする
-  - http://localhost:8006/ で入れる
+  - コンテナに入って`go run main.go`
+  - http://localhost:8006/ で呼べる
   - 参考: https://solomaker.club/how-to-create-go-development-environment-with-docker/
-- front構築
-  - `npm install @mui/material @emotion/react @emotion/styled`
-    - `npm notice New major version of npm available! 8.15.0 -> 9.5.1`
-  - `viteは以下`
+- air導入
+  - `go install github.com/cosmtrek/air@latest`
+  - `air`で実行
+
+### front構築
+- `npm install @mui/material @emotion/react @emotion/styled`
+  - `npm notice New major version of npm available! 8.15.0 -> 9.5.1`
+- `vite`は以下
 ```
 yarn create vite
 ✔ Project name: … frontend
 ✔ Select a framework: › React
 ✔ Select a variant: › TypeScript + SWC
 ```
-- air導入
-  - `go install github.com/cosmtrek/air@latest` # TODO: 起動時に実行するようにする
-  - `air`で実行
-    - http://localhost:8006/ 呼べる
-- DB導入
-  - 疎通確認は以下
-```
-
-DATA="INFO FOR DB;"
-curl --request POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "${DATA}" http://localhost:8009/sql
-[{"time":"68.129µs","status":"OK","result":{"dl":{},"dt":{},"sc":{},"tb":{}}}]
-```
 - 追加インストール
   - `npm install @mui/icons-material`
   - `npm install @uiw/react-split`
     - TODO: 使わなくなったので削除
-- apiコンテナ内で`curl db:8009`で疎通確認
-  - `http://db:8009/sql`でも可？
-- `curl -k -L -s --compressed POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "INFO FOR DB;" http://db:8
-000/sql`
-- `curl -X POST --header "Accept: application/json" --header "NS: test" --header "DB: test" --user "root:pasuwado" --data "INFO FOR DB;" http://db:8000/sql`
 
 ### 起動
 - `docker compose up`
-- reactは何もしなくても起動する
-  - http://localhost:5173/
-- goは起動しないので以下のコマンドを実行
-  - `docker compose exec api sh`
-    - bashは無い
-  - `air`
+- go, react, DBが自動で立ち上がる
+  - http://localhost:5173/ をブラウザで開くと画面が表示される
 
 # 設計
 - 起動時

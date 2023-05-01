@@ -296,8 +296,6 @@ func fetchUser(user_id string) (DisplayUserInfo, error) {
 
 
 func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("呼ばれた")
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
