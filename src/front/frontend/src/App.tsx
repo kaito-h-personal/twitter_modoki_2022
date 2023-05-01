@@ -11,7 +11,6 @@ import Stack from "@mui/material/Stack";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
 import { Box, Button, TextField } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
@@ -81,38 +80,33 @@ function App() {
       <Grid2 container>
         {/* 画面左側 */}
         <Grid2 xs={8}>
-          <div style={{ width: 1000 }}>
-            {tweets.map((tweet) => (
-              <div key={tweet.id}>
-                <Card sx={{ maxWidth: 345 }}>
-                  <CardHeader
-                    avatar={
-                      <Avatar
-                        alt="Remy Sharp"
-                        src={"data:image/png;base64," + tweet.icon_img}
-                        sx={{ width: 50, height: 50 }}
-                      />
-                    }
-                    title={tweet.user_name}
-                    subheader={tweet.created_at}
-                  />
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary">
-                      {tweet.text}
-                    </Typography>
-                  </CardContent>
-                  <CardActions disableSpacing>
-                    <IconButton aria-label="add to favorites">
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton aria-label="share">
-                      <ShareIcon />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </div>
-            ))}
-          </div>
+          {tweets.map((tweet) => (
+            <div key={tweet.id}>
+              <Card sx={{ margin: 2 }}>
+                <CardHeader
+                  avatar={
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={"data:image/png;base64," + tweet.icon_img}
+                      sx={{ width: 50, height: 50 }}
+                    />
+                  }
+                  title={tweet.user_name}
+                  subheader={tweet.created_at}
+                />
+                <CardContent>
+                  <Typography variant="body2" color="text.secondary">
+                    {tweet.text}
+                  </Typography>
+                </CardContent>
+                <CardActions disableSpacing sx={{ justifyContent: "flex-end" }}>
+                  <IconButton aria-label="add to favorites">
+                    <FavoriteIcon />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </div>
+          ))}
         </Grid2>
         {/* 画面右側 */}
         <Grid2 xs={4}>
