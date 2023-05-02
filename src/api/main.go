@@ -300,10 +300,9 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("query")
 	fmt.Println(query)
 
-	// TODO: 名前はerr2で良い？
-	add_result, err2 := executeQuery(query)
-	if err2 != nil {
-		fmt.Println(err2.Error())
+	add_result, err := executeQuery(query)
+	if err != nil {
+		fmt.Println(err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
