@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -51,26 +50,11 @@ var db *surrealdb.DB
 
 func main() {
 	// DBとのコネクションを作成
-	_db, err := surrealdb.New("ws://db:8000/rpc")
+	err := dbSetup()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
-	if _, err := _db.Signin(map[string]interface{}{
-		"user": "root",
-		"pass": "pasuwado",
-	}); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if _, err := _db.Use("test", "test"); err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	db = _db
 
 	// デフォルトのtweetをセット
 	if err := setDefaultTweets(); err != nil {
@@ -105,6 +89,30 @@ func getIconImg(user_id string) (string, error) {
 	// バイト配列をBase64エンコードする
 	encoded := base64.StdEncoding.EncodeToString(data)
 	return encoded, nil
+}
+
+func dbSetup() (error) {
+	_db, err := surrealdb.New("ws://db:8000/rpc")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	if _, err := _db.Signin(map[string]interface{}{
+		"user": "root",
+		"pass": "pasuwado",
+	}); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	if _, err := _db.Use("test", "test"); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	db = _db
+	return nil
 }
 
 func setDefaultTweets() error {
