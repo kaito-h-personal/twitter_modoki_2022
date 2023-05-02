@@ -176,11 +176,12 @@ func setDefaultTweets() (error) {
 			,name = 'ユーザー6'
 		;
 	`
-	_, err := executeQuery(query)
+	_, err := db.Query(query, nil)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return err
 	}
+
 	fmt.Println("デフォルトのtweetをセットしました")
 	return nil
 }
