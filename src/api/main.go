@@ -251,8 +251,6 @@ func fetchTweets() ([]TweetResponse, error) {
 	var tweetResponses []TweetResponse
 
 	for _, t := range tweets {
-		// TODO: ここ2回呼ばれている？
-
 		// アイコンの画像を取得
 		icon_img, err := getIconImg(t.User.Id)
 		if err != nil {

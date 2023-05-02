@@ -59,6 +59,10 @@ yarn create vite
   - `npm install @mui/icons-material`
   - `npm install @uiw/react-split`
     - TODO: 使わなくなったので削除
+- useEffectがマウント時に2回実行される
+  - StrictModeによるもの
+  - 設計上問題ないのでこのままにする
+  - 参考: https://qiita.com/asahina820/items/665c55594cfd55e6f14a
 
 ### 起動
 - `docker compose up`
