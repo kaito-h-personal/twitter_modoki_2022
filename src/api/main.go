@@ -34,19 +34,6 @@ type Tweet struct {
 	User      User   `json:"user"`
 }
 
-type QueryResult struct {
-	Time   string  `json:"time"`
-	Status string  `json:"status"`
-	Result []Tweet `json:"result"`
-}
-
-// TODO: 構造体名
-type QueryResultUser struct {
-	Time   string `json:"time"`
-	Status string `json:"status"`
-	Result []User `json:"result"`
-}
-
 type TweetResponse struct {
 	Id        string `json:"id"`
 	Text      string `json:"text"`
@@ -96,36 +83,6 @@ func main() {
 	http.HandleFunc("/add_tweets", addTweetHandler)
 
 	log.Fatal(http.ListenAndServe(":8007", nil))
-}
-
-func executeQuery(query string) (string, error) {
-	url := "http://db:8000/sql"
-	data := []byte(query)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
-	if err != nil {
-		fmt.Println(err)
-		return "", err
-	}
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("NS", "test")
-	req.Header.Set("DB", "test")
-	req.SetBasicAuth("root", "pasuwado")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-		return "", err
-	}
-
-	return string(body), nil
 }
 
 func getIconImg(user_id string) (string, error) {
