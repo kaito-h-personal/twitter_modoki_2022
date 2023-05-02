@@ -59,7 +59,7 @@ type AddTweet struct {
 	UserId string `json:"user_id"`
 }
 
-// var db *surrealdb.DB
+var dbaaa *surrealdb.DB
 
 func main() {
 	db, err := surrealdb.New("ws://db:8000/rpc")
@@ -81,7 +81,7 @@ func main() {
 		return
 	}
 
-	
+	dbaaa = db
 
 
 
@@ -91,26 +91,7 @@ func main() {
 		return
 	}
 
-	result, err := db.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
-		"value": "user:3",
-	})
-	fmt.Println("あいう")
-
-	// result, err := db.Query("SELECT id, name FROM user", nil)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-
-	fmt.Println("~~~")
-	fmt.Printf("%T\n", result)
-	fmt.Println(result)
-	var userSlice []User
-	ok, err := surrealdb.UnmarshalRaw(result, &userSlice)
-	fmt.Println(ok)
-	fmt.Println(err)
-	fmt.Println(userSlice)
-	fmt.Println("~~~")
+	
 
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
@@ -229,24 +210,30 @@ func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchUser(user_id string) (DisplayUserInfo, error) {
-	// TODO: SQLインジェクション対策
-	query := fmt.Sprintf("SELECT id, name FROM user WHERE id=\"%s\";", user_id)
+	result2, err := dbaaa.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
+		"value": user_id,
+	})
+	fmt.Println("あいう")
 
-	jsonString, err := executeQuery(query)
-	if err != nil {
-		fmt.Println(err)
-		return DisplayUserInfo{}, err
-	}
+	// result2, err := db.Query("SELECT id, name FROM user", nil)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
-	// 構造体に変換
-	var queryResult []QueryResultUser
-	err = json.Unmarshal([]byte(jsonString), &queryResult)
-	if err != nil {
-		fmt.Println(err)
-		return DisplayUserInfo{}, err
-	}
+	fmt.Println("~~~")
+	fmt.Printf("%T\n", result2)
+	fmt.Println(result2)
+	var userSlice []User
+	ok, err := surrealdb.UnmarshalRaw(result2, &userSlice)
+	fmt.Println(ok)
+	fmt.Println(err)
+	fmt.Println(userSlice)
+	var user User = userSlice[0]
+	fmt.Println(user)
+	fmt.Println("~~~")
 
-	var user User = queryResult[0].Result[0] // queryResult及びResultの要素は1つの想定
+
 
 	// アイコンの画像を取得
 	icon_img, err := getIconImg(user_id)
