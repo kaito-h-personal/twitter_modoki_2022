@@ -5,12 +5,12 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/surrealdb/surrealdb.go"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
-	"github.com/surrealdb/surrealdb.go"
 )
 
 type UserId struct {
@@ -150,7 +150,7 @@ func getIconImg(user_id string) (string, error) {
 	return encoded, nil
 }
 
-func setDefaultTweets() (error) {
+func setDefaultTweets() error {
 	query := `
 		DELETE user;
 		DELETE tweet;
@@ -316,8 +316,8 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
             ,created_at = $created_at
         ;`
 	if _, err := db.Query(query, map[string]interface{}{
-		"user_id": addTweet.UserId,
-		"text": addTweet.Text,
+		"user_id":    addTweet.UserId,
+		"text":       addTweet.Text,
 		"created_at": now,
 	}); err != nil {
 		fmt.Println(err.Error())
