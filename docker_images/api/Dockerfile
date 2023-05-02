@@ -7,7 +7,8 @@ FROM golang:${GO_DOCKER_IMAGE_VERSION}
 
 RUN apk update \
     && apk add git alpine-sdk \
-    && go install github.com/cosmtrek/air@latest
+    && go install github.com/cosmtrek/air@latest \
+    && go get github.com/surrealdb/surrealdb.go
 
 # ワーキングディレクトリの設定(TODO: WORKDIRはENVを使わないと変数展開できない)
 WORKDIR /src

@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"github.com/surrealdb/surrealdb.go"
 )
 
 type UserId struct {
@@ -58,13 +59,58 @@ type AddTweet struct {
 	UserId string `json:"user_id"`
 }
 
+// var db *surrealdb.DB
+
 func main() {
-	// デフォルトのtweetをセット
-	err := setDefaultTweets()
+	db, err := surrealdb.New("ws://db:8000/rpc")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
+	if _, err := db.Signin(map[string]interface{}{
+		"user": "root",
+		"pass": "pasuwado",
+	}); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if _, err := db.Use("test", "test"); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	
+
+
+
+	// デフォルトのtweetをセット
+	if err := setDefaultTweets(); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	result, err := db.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
+		"value": "user:3",
+	})
+	fmt.Println("あいう")
+
+	// result, err := db.Query("SELECT id, name FROM user", nil)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+
+	fmt.Println("~~~")
+	fmt.Printf("%T\n", result)
+	fmt.Println(result)
+	var userSlice []User
+	ok, err := surrealdb.UnmarshalRaw(result, &userSlice)
+	fmt.Println(ok)
+	fmt.Println(err)
+	fmt.Println(userSlice)
+	fmt.Println("~~~")
 
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
