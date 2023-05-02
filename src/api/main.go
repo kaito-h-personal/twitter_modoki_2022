@@ -40,6 +40,7 @@ type QueryResult struct {
 	Result []Tweet `json:"result"`
 }
 
+// TODO: 構造体名
 type QueryResultUser struct {
 	Time   string `json:"time"`
 	Status string `json:"status"`
@@ -256,30 +257,25 @@ func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 
 func fetchTweets() ([]TweetResponse, error) {
 	query := "SELECT * FROM tweet ORDER BY created_at DESC FETCH user;"
-
-	jsonString, err := executeQuery(query)
+	query_result, err := db.Query(query, nil)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return []TweetResponse{}, err
 	}
 
-	// 構造体に変換
-	var queryResult []QueryResult
-	err = json.Unmarshal([]byte(jsonString), &queryResult)
-	if err != nil {
-		fmt.Println(err)
+	// クエリの結果を構造体に変換
+	var tweets []Tweet
+	if _, err := surrealdb.UnmarshalRaw(query_result, &tweets); err != nil {
+		fmt.Println(err.Error())
 		return []TweetResponse{}, err
 	}
-
-	var tweets []Tweet = queryResult[0].Result // queryResultの要素は1つの想定
 
 	var tweetResponses []TweetResponse
-
 	for _, t := range tweets {
 		// アイコンの画像を取得
 		icon_img, err := getIconImg(t.User.Id)
 		if err != nil {
-			fmt.Println(err.Error())
+			fmt.Println(err.Error()) // TODO: 統一
 			return []TweetResponse{}, err
 		}
 
