@@ -307,7 +307,7 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	JST := time.FixedZone("Asia/Tokyo", 9*60*60)
-	now := time.Now().In(JST).Format("2006/01/02 15:04:05") // Goは「2006/01/02 15:04:05」でフォーマットを指定する
+	now := time.Now().In(JST).Format("2006/01/02 15:04:05") // Golangは「2006年01月02日 15時04分05秒」でフォーマットを指定する
 
 	query := `
         CREATE tweet SET

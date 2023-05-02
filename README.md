@@ -64,6 +64,9 @@ yarn create vite
   - 設計上問題ないのでこのままにする
   - 参考: https://qiita.com/asahina820/items/665c55594cfd55e6f14a
 
+### DB構築
+- 最初はSurrealDBにHTTPリクエストでクエリを送っていたが、SQLインジェクション対策のためライブラリを導入した
+
 ### 起動
 - `docker compose up`
 - go, react, DBが自動で立ち上がる
