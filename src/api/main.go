@@ -208,8 +208,9 @@ func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchUser(user_id string) (DisplayUserInfo, error) {
-	query_result, err := db.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
-		"value": user_id,
+	query := "SELECT id, name FROM user WHERE id = $user_id"
+	query_result, err := db.Query(query, map[string]interface{}{
+		"user_id": user_id,
 	})
 	if err != nil {
 		fmt.Println(err.Error())
