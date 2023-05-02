@@ -51,6 +51,12 @@ function App() {
   // tweetを投稿
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+
+    // 空投稿はNG
+    if (inputTweetText == "") {
+      return;
+    }
+
     fetch("http://localhost:8006/add_tweets", {
       method: "POST",
       body: JSON.stringify({
