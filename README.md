@@ -59,6 +59,7 @@ yarn create vite
   - `npm install @mui/icons-material`
   - `npm install @uiw/react-split`
     - TODO: 使わなくなったので削除
+  - `npm install @types/react-router-dom`
 - useEffectがマウント時に2回実行される
   - StrictModeによるもの
   - 設計上問題ないのでこのままにする
