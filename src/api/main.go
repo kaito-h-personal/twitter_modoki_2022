@@ -52,13 +52,13 @@ func main() {
 	// DBとのコネクションを作成
 	err := dbSetup()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return
 	}
 
 	// デフォルトのtweetをセット
 	if err := setDefaultTweets(); err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return
 	}
 
@@ -74,7 +74,7 @@ func getIconImg(user_id string) (string, error) {
 	// 画像ファイルを読み込む
 	file, err := os.Open(path)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return "", err
 	}
 	defer file.Close()
@@ -82,7 +82,7 @@ func getIconImg(user_id string) (string, error) {
 	// 画像ファイルをバイト配列に変換する
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return "", err
 	}
 
@@ -94,7 +94,7 @@ func getIconImg(user_id string) (string, error) {
 func dbSetup() (error) {
 	_db, err := surrealdb.New("ws://db:8000/rpc")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return err
 	}
 
@@ -102,12 +102,12 @@ func dbSetup() (error) {
 		"user": "root",
 		"pass": "pasuwado",
 	}); err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return err
 	}
 
 	if _, err := _db.Use("test", "test"); err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		return err
 	}
 
@@ -167,6 +167,7 @@ func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
 	user_info, err := fetchUser(user_id.UserId)
 	if err != nil {
 		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -214,6 +215,7 @@ func fetchTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	tweets, err := fetchTweets()
 	if err != nil {
 		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -240,7 +242,7 @@ func fetchTweets() ([]TweetResponse, error) {
 		// アイコンの画像を取得
 		icon_img, err := getIconImg(t.User.Id)
 		if err != nil {
-			fmt.Println(err.Error()) // TODO: 統一
+			fmt.Println(err.Error())
 			return []TweetResponse{}, err
 		}
 
@@ -286,12 +288,14 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 		"created_at": now,
 	}); err != nil {
 		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	tweets, err := fetchTweets()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
