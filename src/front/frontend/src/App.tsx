@@ -40,7 +40,7 @@ function App() {
   };
 
   const [user, setUser] = useState<User>({
-    name: "ユーザー名の取得に失敗しました",
+    name: "--",
     icon_img: "",
   });
 

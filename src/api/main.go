@@ -210,30 +210,22 @@ func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchUser(user_id string) (DisplayUserInfo, error) {
-	result2, err := dbaaa.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
+	query_result, err := dbaaa.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
 		"value": user_id,
 	})
-	fmt.Println("あいう")
+	if err != nil {
+		fmt.Println(err.Error())
+		return DisplayUserInfo{}, err
+	}
 
-	// result2, err := db.Query("SELECT id, name FROM user", nil)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
+	// クエリの結果を構造体に変換
+	var user_slice []User
+	if _, err := surrealdb.UnmarshalRaw(query_result, &user_slice); err != nil {
+		fmt.Println(err.Error())
+		return DisplayUserInfo{}, err
+	}
 
-	fmt.Println("~~~")
-	fmt.Printf("%T\n", result2)
-	fmt.Println(result2)
-	var userSlice []User
-	ok, err := surrealdb.UnmarshalRaw(result2, &userSlice)
-	fmt.Println(ok)
-	fmt.Println(err)
-	fmt.Println(userSlice)
-	var user User = userSlice[0]
-	fmt.Println(user)
-	fmt.Println("~~~")
-
-
+	var user User = user_slice[0] // 要素は一つの想定
 
 	// アイコンの画像を取得
 	icon_img, err := getIconImg(user_id)
