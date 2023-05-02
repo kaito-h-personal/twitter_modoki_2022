@@ -209,7 +209,7 @@ func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchUser(user_id string) (DisplayUserInfo, error) {
-	query := "SELECT id, name FROM user WHERE id = $user_id"
+	query := "SELECT id, name FROM user WHERE id = $user_id;"
 	query_result, err := db.Query(query, map[string]interface{}{
 		"user_id": user_id,
 	})
@@ -309,25 +309,20 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	JST := time.FixedZone("Asia/Tokyo", 9*60*60)
 	now := time.Now().In(JST).Format("2006/01/02 15:04:05") // Goは「2006/01/02 15:04:05」でフォーマットを指定する
 
-	// TODO: SQLインジェクション対策
-	query := fmt.Sprintf(`
+	query := `
         CREATE tweet SET
-            user = %s
-            ,text = '%s'
-            ,created_at = '%s'
-        ;`, addTweet.UserId, addTweet.Text, now)
-
-	fmt.Println("query")
-	fmt.Println(query)
-
-	add_result, err := executeQuery(query)
-	if err != nil {
+            user = $user_id
+            ,text = $text
+            ,created_at = $created_at
+        ;`
+	if _, err := db.Query(query, map[string]interface{}{
+		"user_id": addTweet.UserId,
+		"text": addTweet.Text,
+		"created_at": now,
+	}); err != nil {
 		fmt.Println(err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
-
-	fmt.Println("add_result")
-	fmt.Println(add_result)
 
 	tweets, err := fetchTweets()
 	if err != nil {
