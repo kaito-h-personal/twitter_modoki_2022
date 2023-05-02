@@ -158,6 +158,7 @@ func setDefaultTweets() (error) {
 		return err
 	}
 	fmt.Println("デフォルトのtweetをセットしました")
+	return nil
 }
 
 func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
