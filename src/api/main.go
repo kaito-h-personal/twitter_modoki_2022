@@ -59,16 +59,17 @@ type AddTweet struct {
 	UserId string `json:"user_id"`
 }
 
-var dbaaa *surrealdb.DB
+var db *surrealdb.DB
 
 func main() {
-	db, err := surrealdb.New("ws://db:8000/rpc")
+	// DBとのコネクションを作成
+	_db, err := surrealdb.New("ws://db:8000/rpc")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	if _, err := db.Signin(map[string]interface{}{
+	if _, err := _db.Signin(map[string]interface{}{
 		"user": "root",
 		"pass": "pasuwado",
 	}); err != nil {
@@ -76,22 +77,18 @@ func main() {
 		return
 	}
 
-	if _, err := db.Use("test", "test"); err != nil {
+	if _, err := _db.Use("test", "test"); err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	dbaaa = db
-
-
+	db = _db
 
 	// デフォルトのtweetをセット
 	if err := setDefaultTweets(); err != nil {
 		fmt.Println(err)
 		return
 	}
-
-	
 
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
@@ -210,7 +207,7 @@ func fetchUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetchUser(user_id string) (DisplayUserInfo, error) {
-	query_result, err := dbaaa.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
+	query_result, err := db.Query("SELECT id, name FROM user WHERE id = $value", map[string]interface{}{
 		"value": user_id,
 	})
 	if err != nil {
