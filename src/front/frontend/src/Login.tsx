@@ -13,6 +13,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 
+import { useNavigate } from "react-router-dom";
+
 function Copyright(props: any) {
   return (
     <Typography
@@ -34,8 +36,13 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const navigate = useNavigate();
+
   function recieveDate(params: any) {
     console.log(params);
+    if (params) {
+      navigate("/App");
+    }
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
