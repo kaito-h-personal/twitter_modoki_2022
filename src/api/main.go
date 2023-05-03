@@ -41,9 +41,15 @@ type TweetResponse struct {
 	IconImg   string `json:"icon_img"`
 }
 
+// TODO: AddTweetRequestの方が良さそう
 type AddTweet struct {
 	Text   string `json:"text"`
 	UserId string `json:"user_id"`
+}
+
+type AuthRequest struct {
+	email   string `json:"email"`
+	password string `json:"password"`
 }
 
 var db *surrealdb.DB
@@ -62,6 +68,7 @@ func main() {
 		return
 	}
 
+	http.HandleFunc("/auth", authHandler)
 	http.HandleFunc("/user", fetchUserHandler)
 	http.HandleFunc("/tweets", fetchTweetsHandler)
 	http.HandleFunc("/add_tweets", addTweetHandler)
@@ -300,4 +307,23 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(tweets)
+}
+
+
+func authHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+
+	var authRequest AuthRequest
+	err := json.NewDecoder(r.Body).Decode(&authRequest)
+	if err != nil {
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+
+	hoge := "hoge"
+
+	json.NewEncoder(w).Encode(hoge)
 }

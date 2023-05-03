@@ -34,6 +34,10 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
+  function recieveDate(params: any) {
+    console.log(params);
+  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -41,6 +45,16 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    fetch("http://localhost:8006/auth", {
+      method: "POST",
+      body: JSON.stringify({
+        email: data.get("email"),
+        password: data.get("password"),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => recieveDate(data))
+      .catch((error) => console.error(error));
   };
 
   return (
