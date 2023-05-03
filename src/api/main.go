@@ -53,6 +53,7 @@ type AuthRequest struct {
 }
 
 
+// TODO: surrealdb.UnmarshalRawは多めにあっても問題ないので、テーブルに合わせる
 type UserAuth struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
