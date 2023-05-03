@@ -48,8 +48,15 @@ type AddTweet struct {
 }
 
 type AuthRequest struct {
-	email   string `json:"email"`
-	password string `json:"password"`
+	Email   string `json:"email"`
+	Password string `json:"password"`
+}
+
+
+type UserAuth struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	EncryptedPassword string `json:"encrypted_password"`
 }
 
 var db *surrealdb.DB
@@ -129,10 +136,20 @@ func setDefaultTweets() error {
 		CREATE user SET
 			id = 1
 			,name = 'ユーザー1'
+			,email = 'user1@example.com'
+			,encrypted_password = 'password1'
 		;
 		CREATE user SET
 			id = 3
 			,name = 'ユーザー3'
+			,email = 'user3@example.com'
+			,encrypted_password = 'password3'
+		;
+		CREATE user SET
+			id = 6
+			,name = 'ユーザー6'
+			,email = 'user6@example.com'
+			,encrypted_password = 'password6'
 		;
 		CREATE tweet SET
 			user = user:1
@@ -143,10 +160,6 @@ func setDefaultTweets() error {
 			user = user:3
 			,text = 'テスト内容2'
 			,created_at = '2009/01/02 15:04:05'
-		;
-		CREATE user SET
-			id = 6
-			,name = 'ユーザー6'
 		;
 	`
 	_, err := db.Query(query, nil)
@@ -272,6 +285,7 @@ func addTweetHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
+	// リクエストの中身を取得
 	var addTweet AddTweet
 	err := json.NewDecoder(r.Body).Decode(&addTweet)
 	if err != nil {
@@ -314,6 +328,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 
+	// リクエストの中身を取得
 	var authRequest AuthRequest
 	err := json.NewDecoder(r.Body).Decode(&authRequest)
 	if err != nil {
@@ -322,8 +337,32 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	query := "SELECT id, name, encrypted_password FROM user WHERE email = $email;"
+	query_result, err := db.Query(query, map[string]interface{}{
+		"email": authRequest.Email,
+	})
+	if err != nil {
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	hoge := "hoge"
+	// クエリの結果を構造体に変換
+	var user_auth []UserAuth
+	if _, err := surrealdb.UnmarshalRaw(query_result, &user_auth); err != nil {
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	json.NewEncoder(w).Encode(hoge)
+	is_authorized := false
+
+	if len(user_auth) != 0 {
+		// user_authは要素一つの想定
+		if user_auth[0].EncryptedPassword == authRequest.Password {
+			is_authorized = true
+		}
+	}
+
+	json.NewEncoder(w).Encode(is_authorized)
 }
