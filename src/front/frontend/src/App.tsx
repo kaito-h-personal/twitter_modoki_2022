@@ -64,7 +64,7 @@ function App() {
     fetch("http://localhost:8006/add_tweets", {
       method: "POST",
       body: JSON.stringify({
-        user_id: "user:6", // 決めうち
+        user_id: cookies.user_id,
         text: inputTweetText,
       }),
     })
@@ -81,7 +81,7 @@ function App() {
       method: "POST",
       // TODO: http://localhost:8006/user/user:6のようにGETにする？(脆弱性？)
       body: JSON.stringify({
-        user_id: "user:6", // 決めうち
+        user_id: cookies.user_id,
       }),
     })
       .then((response) => response.json())

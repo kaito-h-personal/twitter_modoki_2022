@@ -357,11 +357,11 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	is_authorized := false
+	user_id := ""
 
 	if len(user_auth) != 0 {
-		is_authorized = true
+		user_id = user_auth[0].Id
 	}
 
-	json.NewEncoder(w).Encode(is_authorized)
+	json.NewEncoder(w).Encode(user_id)
 }

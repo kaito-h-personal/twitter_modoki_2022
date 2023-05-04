@@ -41,9 +41,10 @@ export default function SignIn() {
   const [cookies, setCookie] = useCookies(["user_id"]);
 
   function recieveDate(params: any) {
+    console.log("params");
     console.log(params);
-    setCookie("user_id", "user:6");
-    if (params) {
+    setCookie("user_id", params);
+    if (params !== "") {
       navigate("/App");
     }
   }
