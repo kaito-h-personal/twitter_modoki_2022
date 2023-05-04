@@ -338,9 +338,10 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := "SELECT id, name, encrypted_password FROM user WHERE email = $email;"
+	query := "SELECT id, name, encrypted_password FROM user WHERE email = $email AND encrypted_password = $encrypted_password;"
 	query_result, err := db.Query(query, map[string]interface{}{
 		"email": authRequest.Email,
+		"encrypted_password": authRequest.Password,
 	})
 	if err != nil {
 		fmt.Println(err.Error())
@@ -359,10 +360,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 	is_authorized := false
 
 	if len(user_auth) != 0 {
-		// user_authは要素一つの想定
-		if user_auth[0].EncryptedPassword == authRequest.Password {
-			is_authorized = true
-		}
+		is_authorized = true
 	}
 
 	json.NewEncoder(w).Encode(is_authorized)
