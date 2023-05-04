@@ -150,7 +150,7 @@ func setDefaultTweets() error {
 			id = 6
 			,name = 'ユーザー6'
 			,email = 'user6@example.com'
-			,encrypted_password = 'password6'
+			,encrypted_password = '598a1a400c1dfdf36974e69d7e1bc98593f2e15015eed8e9b7e47a83b31693d5' -- 元のパスワード: 'password6'
 		;
 		CREATE tweet SET
 			user = user:1

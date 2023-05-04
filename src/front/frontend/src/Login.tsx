@@ -45,19 +45,37 @@ export default function SignIn() {
     }
   }
 
+  const hashing_sha256 = async (text: string) => {
+    const uint8 = new TextEncoder().encode(text);
+    const digest = await crypto.subtle.digest("SHA-256", uint8);
+    return Array.from(new Uint8Array(digest))
+      .map((v) => v.toString(16).padStart(2, "0"))
+      .join("");
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    fetch("http://localhost:8006/auth", {
-      method: "POST",
-      body: JSON.stringify({
-        email: data.get("email"),
-        password: data.get("password"),
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => recieveDate(data))
-      .catch((error) => console.error(error));
+
+    var p = data.get("password");
+
+    if (p == null) {
+      return;
+    }
+
+    hashing_sha256(p.toString()).then((hashed_password) => {
+      console.log(hashed_password);
+      fetch("http://localhost:8006/auth", {
+        method: "POST",
+        body: JSON.stringify({
+          email: data.get("email"),
+          password: hashed_password,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => recieveDate(data))
+        .catch((error) => console.error(error));
+    });
   };
 
   return (
