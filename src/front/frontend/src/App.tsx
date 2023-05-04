@@ -23,6 +23,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const theme = useTheme();
@@ -73,8 +74,11 @@ function App() {
       .catch((error) => console.error(error));
   };
 
+  const navigate = useNavigate();
   useEffect(() => {
-    console.log(cookies.user_id);
+    if (!cookies.user_id) {
+      navigate("/");
+    }
 
     // ユーザー情報を取得
     fetch("http://localhost:8006/user", {
