@@ -13,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 
+import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
 function Copyright(props: any) {
@@ -37,9 +38,11 @@ const theme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(["user_id"]);
 
   function recieveDate(params: any) {
     console.log(params);
+    setCookie("user_id", "user:6");
     if (params) {
       navigate("/App");
     }

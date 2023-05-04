@@ -22,6 +22,8 @@ import IconButton from "@mui/material/IconButton";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
+import { useCookies } from "react-cookie";
+
 function App() {
   const theme = useTheme();
   const appBarHeight = theme.mixins.toolbar.minHeight;
@@ -48,6 +50,8 @@ function App() {
 
   const [inputTweetText, setInputTweetText] = useState("");
 
+  const [cookies] = useCookies(["user_id"]);
+
   // tweetを投稿
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -70,6 +74,8 @@ function App() {
   };
 
   useEffect(() => {
+    console.log(cookies.user_id);
+
     // ユーザー情報を取得
     fetch("http://localhost:8006/user", {
       method: "POST",
