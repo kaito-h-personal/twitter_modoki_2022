@@ -138,19 +138,19 @@ func setDefaultTweets() error {
 			id = 1
 			,name = 'ユーザー1'
 			,email = 'user1@example.com'
-			,encrypted_password = 'password1'
+			,encrypted_password = '40a966ec25fd54b4d05b4b787133be769023b3f6ea716f288b9040671a75b9b0' -- 元のパスワード: 'K,NKd2*X3&F8'
 		;
 		CREATE user SET
 			id = 3
 			,name = 'ユーザー3'
 			,email = 'user3@example.com'
-			,encrypted_password = 'password3'
+			,encrypted_password = 'fa0ddee52891d14dbd670d4b2075014c0ead95298b2956ec07534e09b9940ea9' -- 元のパスワード: 'fmJ5sm-rqipJ'
 		;
 		CREATE user SET
 			id = 6
 			,name = 'ユーザー6'
 			,email = 'user6@example.com'
-			,encrypted_password = '598a1a400c1dfdf36974e69d7e1bc98593f2e15015eed8e9b7e47a83b31693d5' -- 元のパスワード: 'password6'
+			,encrypted_password = '19cf321efa28bcba594c61bba2954bd20b6dfc1a6e4c018f07416d49f5021f26' -- 元のパスワード: 'R+7T8|w_6n7P'
 		;
 		CREATE tweet SET
 			user = user:1
