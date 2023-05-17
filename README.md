@@ -98,13 +98,6 @@ yarn create vite
 - 名前
 - 表示ID?
 
-CREATE tweet SET
-	id = 1,
-  auther = 1,
-  text = 'I got it.',
-	created_at = time::now()
-;
-
 ## ログインフォームについて
 - 本来はフロントエンドとバックエンド間はHTTPSで通信すべきだが、dockerコンテナ間で通信する都合上HTTPで通信している
 - TODO: 3回間違えたらロック
