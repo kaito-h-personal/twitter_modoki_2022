@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 
 import Stack from "@mui/material/Stack";
 
-import Grid2 from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box, Button, TextField } from "@mui/material";
@@ -111,9 +111,9 @@ function App() {
       </AppBar>
       {/* ヘッダーの分の余白を挿入 */}
       <div style={{ marginTop: appBarHeight, paddingTop: 20 }} />
-      <Grid2 container>
+      <Grid container>
         {/* 画面左側 */}
-        <Grid2 xs={8}>
+        <Grid xs={8}>
           {tweets.map((tweet) => (
             <div key={tweet.id}>
               <Card sx={{ margin: 2 }}>
@@ -140,9 +140,9 @@ function App() {
               </Card>
             </div>
           ))}
-        </Grid2>
+        </Grid>
         {/* 画面右側(fixedでスクロールしても動かないようにする) */}
-        <Grid2 xs={4} position="fixed" sx={{ right: 7 }}>
+        <Grid xs={4} position="fixed" sx={{ right: 7 }}>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
               src={"data:image/png;base64," + user.icon_img}
@@ -166,8 +166,8 @@ function App() {
               </Button>
             </Box>
           </form>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </div>
   );
 }
