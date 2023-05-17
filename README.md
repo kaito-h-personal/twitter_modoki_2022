@@ -62,6 +62,7 @@ yarn create vite
   - StrictModeによるもの
   - 設計上問題ないのでこのままにする
   - 参考: https://qiita.com/asahina820/items/665c55594cfd55e6f14a
+- Grid2周りのエラーが出たら`yarn dev --force`する
 
 ### DB構築
 - 最初はSurrealDBにHTTPリクエストでクエリを送っていたが、SQLインジェクション対策のためライブラリを導入した
